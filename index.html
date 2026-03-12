@@ -49,38 +49,10 @@
     .urgency-btn.urgent.selected { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
     .success-msg { display: none; background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 16px; text-align: center; color: #16a34a; font-weight: 600; margin-top: 14px; }
     .success-msg.show { display: block; }
-    /* ADMIN */
-    .admin-gate { text-align: center; padding: 40px 20px; }
-    .admin-gate h2 { font-size: 1.3rem; margin-bottom: 20px; color: #374151; }
-    #admin-content { display: none; }
-    .admin-section { background: white; border-radius: 14px; padding: 22px; margin-bottom: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
-    .admin-section h3 { font-size: 1rem; font-weight: 700; color: #1a56db; margin-bottom: 14px; }
-    .admin-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-    .admin-field label { font-size: 0.83rem; font-weight: 600; color: #6b7280; }
-    .admin-field input, .admin-field textarea { border: 1px solid #d1d5db; border-radius: 8px; padding: 9px 12px; font-family: inherit; font-size: 0.95rem; outline: none; transition: border 0.2s; }
-    .admin-field input:focus, .admin-field textarea:focus { border-color: #1a56db; }
-    .admin-field textarea { min-height: 70px; resize: vertical; }
-    .save-btn { background: #16a34a; color: white; border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.93rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-    .save-btn:hover { background: #15803d; }
-    .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media(max-width:500px){ .admin-grid { grid-template-columns: 1fr; } }
-    .sched-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
-    .sched-row input { border: 1px solid #d1d5db; border-radius: 6px; padding: 7px 10px; font-family: inherit; font-size: 0.88rem; outline: none; }
-    .sched-row input:focus { border-color: #1a56db; }
-    .del-btn { background: #fee2e2; border: none; border-radius: 6px; padding: 7px 10px; cursor: pointer; color: #dc2626; font-size: 0.9rem; }
-    .add-row-btn { background: #eff6ff; border: 1px dashed #93c5fd; border-radius: 8px; padding: 8px; width: 100%; cursor: pointer; color: #1a56db; font-size: 0.88rem; font-family: inherit; margin-top: 4px; }
-    /* Feedback question rows */
-    .q-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
-    .q-row input { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 11px; font-family: inherit; font-size: 0.9rem; outline: none; width: 100%; }
-    .q-row input:focus { border-color: #1a56db; }
-    /* Dynamic feedback questions */
-    .fb-question { margin-bottom: 18px; }
-    .fb-question label { display: block; font-size: 0.88rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .loading-spinner { text-align: center; padding: 40px; color: #94a3b8; font-size: 1rem; }
     @media (max-width: 480px) {
       .header h1 { font-size: 1.5rem; }
       .tab-btn { padding: 12px 10px; font-size: 0.84rem; }
-      .sched-row { grid-template-columns: 1fr 1fr; }
-      .sched-row input:nth-child(3) { grid-column: span 2; }
     }
   </style>
 </head>
@@ -97,7 +69,6 @@
   <button class="tab-btn" onclick="showTab('schedule', this)">🕐 Schedule</button>
   <button class="tab-btn" onclick="showTab('feedback', this)">⭐ Feedback</button>
   <button class="tab-btn" onclick="showTab('contact', this)">💬 Contact Staff</button>
-  <button class="tab-btn" onclick="showTab('admin', this)">⚙️ Admin</button>
 </div>
 
 <div class="content">
@@ -106,15 +77,15 @@
   <div class="tab-panel active" id="tab-info">
     <div class="card">
       <h2>👋 Welcome to the Hostel!</h2>
-      <p id="welcome-text">We're happy to have you here.</p>
+      <p id="welcome-text"><span class="loading-spinner">Loading...</span></p>
     </div>
     <div class="card">
       <h2>📋 House Rules</h2>
-      <ul id="rules-list"></ul>
+      <ul id="rules-list"><li style="color:#94a3b8">Loading...</li></ul>
     </div>
     <div class="card">
       <h2>📞 Contact</h2>
-      <p id="contact-text"></p>
+      <p id="contact-text"><span style="color:#94a3b8">Loading...</span></p>
     </div>
   </div>
 
@@ -126,9 +97,9 @@
         <div class="wifi-icon">📡</div>
         <div class="wifi-details">
           <strong>Network name (SSID)</strong>
-          <span id="wifi-ssid">HostelHub_Guest</span>
+          <span id="wifi-ssid">Loading...</span>
           <strong style="margin-top:10px;">Password</strong>
-          <span id="wifi-password">1234</span>
+          <span id="wifi-password">Loading...</span>
         </div>
       </div>
     </div>
@@ -148,14 +119,14 @@
       <h2>🍽️ Meal Times</h2>
       <table class="schedule-table">
         <thead><tr><th>Meal</th><th>Days</th><th>Hours</th></tr></thead>
-        <tbody id="meals-table-view"></tbody>
+        <tbody id="meals-table-view"><tr><td colspan="3" style="color:#94a3b8;text-align:center">Loading...</td></tr></tbody>
       </table>
     </div>
     <div class="card">
       <h2>🕍 Prayers &amp; Meetings</h2>
       <table class="schedule-table">
         <thead><tr><th>Event</th><th>Days</th><th>Time</th></tr></thead>
-        <tbody id="events-table-view"></tbody>
+        <tbody id="events-table-view"><tr><td colspan="3" style="color:#94a3b8;text-align:center">Loading...</td></tr></tbody>
       </table>
     </div>
     <div class="card">
@@ -176,10 +147,7 @@
           <label>Room Number</label>
           <select id="fb-room"><option value="">Select room...</option></select>
         </div>
-
-        <!-- Dynamic star questions rendered by JS -->
         <div id="fb-questions-container"></div>
-
         <div class="form-group">
           <label>Comments</label>
           <textarea id="fb-comments" placeholder="Tell us about your stay..."></textarea>
@@ -235,140 +203,135 @@
     </div>
   </div>
 
-  <!-- ADMIN -->
-  <div class="tab-panel" id="tab-admin">
-    <div id="admin-gate-view" class="admin-gate">
-      <h2>🔐 Administrator Login</h2>
-      <div class="form-group" style="max-width:300px; margin:0 auto;">
-        <label>Admin Password</label>
-        <input type="password" id="admin-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter') checkAdmin()" />
-      </div>
-      <button class="btn" style="max-width:300px; margin:14px auto 0; display:block;" onclick="checkAdmin()">Login</button>
-      <p id="admin-error" style="color:#dc2626; margin-top:10px; display:none;">Incorrect password</p>
-    </div>
-
-    <div id="admin-content">
-
-      <div class="admin-section">
-        <h3>📶 WiFi Settings</h3>
-        <div class="admin-grid">
-          <div class="admin-field"><label>Network Name (SSID)</label><input id="a-ssid" type="text" /></div>
-          <div class="admin-field"><label>Password</label><input id="a-wifi-pass" type="text" /></div>
-        </div>
-        <button class="save-btn" onclick="saveWifi()">Save WiFi</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>👋 Welcome Text</h3>
-        <div class="admin-field"><textarea id="a-welcome" rows="3"></textarea></div>
-        <button class="save-btn" onclick="saveWelcome()">Save</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>📋 House Rules</h3>
-        <div class="admin-field"><label>One rule per line</label><textarea id="a-rules" rows="5"></textarea></div>
-        <button class="save-btn" onclick="saveRules()">Save</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>📞 Contact Info Text</h3>
-        <div class="admin-field"><textarea id="a-contact" rows="3"></textarea></div>
-        <button class="save-btn" onclick="saveContact()">Save</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>🍽️ Meal Schedule</h3>
-        <div id="admin-meals"></div>
-        <button class="add-row-btn" onclick="addSchedRow('meals')">+ Add Row</button>
-        <br/><br/>
-        <button class="save-btn" onclick="saveSched('meals')">Save Meals</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>🕍 Prayers &amp; Meetings Schedule</h3>
-        <div id="admin-events"></div>
-        <button class="add-row-btn" onclick="addSchedRow('events')">+ Add Row</button>
-        <br/><br/>
-        <button class="save-btn" onclick="saveSched('events')">Save Schedule</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>📝 Schedule Notes</h3>
-        <div class="admin-field"><textarea id="a-sched-notes" rows="3"></textarea></div>
-        <button class="save-btn" onclick="saveSchedNotes()">Save</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>⭐ Feedback Questions</h3>
-        <p style="font-size:0.85rem; color:#64748b; margin-bottom:12px;">Edit the rating questions shown to guests. Drag to reorder, or delete and add new ones.</p>
-        <div id="admin-fb-questions"></div>
-        <button class="add-row-btn" onclick="addFbQuestion()">+ Add Question</button>
-        <br/><br/>
-        <button class="save-btn" onclick="saveFbQuestions()">Save Questions</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>📱 WhatsApp Staff Number</h3>
-        <div class="admin-field">
-          <label>International format (e.g. 972501234567 — no + or spaces)</label>
-          <input id="a-whatsapp" type="text" placeholder="972501234567" />
-        </div>
-        <button class="save-btn" onclick="saveWhatsapp()">Save</button>
-      </div>
-
-      <div class="admin-section">
-        <h3>🔑 Change Admin Password</h3>
-        <div class="admin-grid">
-          <div class="admin-field"><label>New Password</label><input id="a-new-pass" type="password" /></div>
-          <div class="admin-field"><label>Confirm</label><input id="a-confirm-pass" type="password" /></div>
-        </div>
-        <button class="save-btn" onclick="changePass()">Change Password</button>
-      </div>
-
-      <div style="text-align:center; margin-top:10px;">
-        <button onclick="adminLogout()" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:0.95rem;">🚪 Logout</button>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <script>
 // ===== CONFIG =====
-const BASE44_APP_ID = '68e60777e6063534b86e840a';
-const BASE44_API    = 'https://app.base44.com/api/apps/' + BASE44_APP_ID + '/entities/GuestFeedback';
+const APP_ID      = '68e60777e6063534b86e840a';
+const API_BASE    = `https://app.base44.com/api/apps/${APP_ID}/entities`;
+const FB_API      = `${API_BASE}/GuestFeedback`;
+const CONTENT_API = `${API_BASE}/LandingPageContent`;
+const GR_API      = `${API_BASE}/GuestRequest`;
 
-// ===== DEFAULTS =====
+// ===== DEFAULTS (fallback if DB empty) =====
 const DEFAULTS = {
-  wifi_ssid:    'HostelHub_Guest',
-  wifi_pass:    '1234',
-  welcome:      "We're happy to have you here. This page has everything you need for a comfortable stay.",
-  rules:        "Quiet hours: 22:00 – 07:00\nPlease keep rooms and shared spaces clean\nNo smoking inside the building\nReturn keys by check-out time",
-  sched_notes:  "Times may change — please check with staff for updates.",
+  wifi: { ssid: 'HostelHub_Guest', pass: '1234' },
+  welcome: "We're happy to have you here. This page has everything you need for a comfortable stay.",
+  rules: "Quiet hours: 22:00 – 07:00\nPlease keep rooms and shared spaces clean\nNo smoking inside the building\nReturn keys by check-out time",
+  sched_notes: "Times may change — please check with staff for updates.",
   contact_text: 'For any question or request — use the "Contact Staff" tab or visit reception.',
-  admin_pass:   '11082013',
-  whatsapp:     '972584400114',
-  meals: JSON.stringify([
-    { name: 'Breakfast',        days: 'Sun–Fri',  time: '07:00 – 09:00' },
-    { name: 'Lunch',            days: 'Sun–Fri',  time: '12:30 – 14:00' },
-    { name: 'Dinner',           days: 'Sun–Fri',  time: '18:30 – 20:00' },
-    { name: 'Shabbat Breakfast',days: 'Saturday', time: '09:00 – 10:30' }
-  ]),
-  events: JSON.stringify([
+  whatsapp: '972584400114',
+  meals: [
+    { name: 'Breakfast', days: 'Sun–Fri', time: '07:00 – 09:00' },
+    { name: 'Lunch',     days: 'Sun–Fri', time: '12:30 – 14:00' },
+    { name: 'Dinner',    days: 'Sun–Fri', time: '18:30 – 20:00' },
+    { name: 'Shabbat Breakfast', days: 'Saturday', time: '09:00 – 10:30' }
+  ],
+  events: [
     { name: 'Shacharit',      days: 'Sun–Fri', time: '06:45' },
     { name: 'Mincha/Maariv',  days: 'Daily',   time: 'Sunset' },
     { name: 'Evening Lecture',days: 'Sun–Thu', time: '21:00 – 22:00' }
-  ]),
-  fb_questions: JSON.stringify([
+  ],
+  fb_questions: [
     { id: 'cleanliness', label: 'Cleanliness' },
     { id: 'food',        label: 'Food' },
     { id: 'staff',       label: 'Staff Communication' },
     { id: 'overall',     label: 'Overall Rating' }
-  ])
+  ]
 };
 
-function get(key) { return localStorage.getItem('hh_' + key) ?? DEFAULTS[key]; }
-function set(key, val) { localStorage.setItem('hh_' + key, val); }
+let CONTENT = {}; // loaded from DB
+let whatsappNum = DEFAULTS.whatsapp;
+
+// ===== LOAD FROM DB =====
+async function loadFromDB() {
+  try {
+    const res = await fetch(CONTENT_API);
+    const json = await res.json();
+    const records = json.data || json || [];
+
+    records.forEach(r => {
+      const t = r.section_type || r.data?.section_type;
+      const c = r.content ?? r.data?.content ?? '';
+      const oi = r.order_index ?? r.data?.order_index ?? 0;
+      if (!t) return;
+      if (!CONTENT[t]) CONTENT[t] = [];
+      CONTENT[t].push({ content: c, order_index: oi });
+    });
+
+    // Sort schedule rows
+    if (CONTENT.meal)  CONTENT.meal.sort((a,b)  => a.order_index - b.order_index);
+    if (CONTENT.event) CONTENT.event.sort((a,b) => a.order_index - b.order_index);
+
+    applyContent();
+  } catch(e) {
+    console.warn('DB load failed, using defaults', e);
+    applyDefaults();
+  }
+}
+
+function getVal(type) {
+  return CONTENT[type]?.[0]?.content ?? null;
+}
+
+function applyContent() {
+  // WiFi
+  const wifiRaw = getVal('wifi');
+  const wifi = wifiRaw ? JSON.parse(wifiRaw) : DEFAULTS.wifi;
+  document.getElementById('wifi-ssid').textContent     = wifi.ssid || DEFAULTS.wifi.ssid;
+  document.getElementById('wifi-password').textContent = wifi.pass || DEFAULTS.wifi.pass;
+
+  // Welcome
+  document.getElementById('welcome-text').textContent = getVal('welcome') || DEFAULTS.welcome;
+
+  // Rules
+  const rules = (getVal('rules') || DEFAULTS.rules).split('\n').filter(r => r.trim());
+  document.getElementById('rules-list').innerHTML = rules.map(r => `<li>${r}</li>`).join('');
+
+  // Contact text
+  document.getElementById('contact-text').textContent = getVal('contact_text') || DEFAULTS.contact_text;
+
+  // Schedule notes
+  document.getElementById('schedule-notes').textContent = getVal('sched_notes') || DEFAULTS.sched_notes;
+
+  // WhatsApp
+  whatsappNum = getVal('whatsapp') || DEFAULTS.whatsapp;
+
+  // Meals
+  const meals = CONTENT.meal?.length
+    ? CONTENT.meal.map(r => JSON.parse(r.content))
+    : DEFAULTS.meals;
+  document.getElementById('meals-table-view').innerHTML = meals.map(m =>
+    `<tr><td>${m.name}</td><td>${m.days}</td><td>${m.time}</td></tr>`).join('');
+
+  // Events
+  const events = CONTENT.event?.length
+    ? CONTENT.event.map(r => JSON.parse(r.content))
+    : DEFAULTS.events;
+  document.getElementById('events-table-view').innerHTML = events.map(e =>
+    `<tr><td>${e.name}</td><td>${e.days}</td><td>${e.time}</td></tr>`).join('');
+
+  // Feedback questions
+  const fbQRaw = getVal('fb_questions');
+  const fbQ = fbQRaw ? JSON.parse(fbQRaw) : DEFAULTS.fb_questions;
+  renderFeedbackQuestions(fbQ);
+}
+
+function applyDefaults() {
+  document.getElementById('wifi-ssid').textContent     = DEFAULTS.wifi.ssid;
+  document.getElementById('wifi-password').textContent = DEFAULTS.wifi.pass;
+  document.getElementById('welcome-text').textContent  = DEFAULTS.welcome;
+  const rules = DEFAULTS.rules.split('\n').filter(r => r.trim());
+  document.getElementById('rules-list').innerHTML = rules.map(r => `<li>${r}</li>`).join('');
+  document.getElementById('contact-text').textContent  = DEFAULTS.contact_text;
+  document.getElementById('schedule-notes').textContent= DEFAULTS.sched_notes;
+  whatsappNum = DEFAULTS.whatsapp;
+  document.getElementById('meals-table-view').innerHTML = DEFAULTS.meals.map(m =>
+    `<tr><td>${m.name}</td><td>${m.days}</td><td>${m.time}</td></tr>`).join('');
+  document.getElementById('events-table-view').innerHTML = DEFAULTS.events.map(e =>
+    `<tr><td>${e.name}</td><td>${e.days}</td><td>${e.time}</td></tr>`).join('');
+  renderFeedbackQuestions(DEFAULTS.fb_questions);
+}
 
 // ===== ROOM LIST =====
 const ROOMS = [];
@@ -394,40 +357,17 @@ function showTab(name, btn) {
   if (btn) btn.classList.add('active');
 }
 
-// ===== LOAD CONTENT =====
-function loadContent() {
-  document.getElementById('wifi-ssid').textContent     = get('wifi_ssid');
-  document.getElementById('wifi-password').textContent = get('wifi_pass');
-  document.getElementById('welcome-text').textContent  = get('welcome');
-  document.getElementById('schedule-notes').textContent= get('sched_notes');
-  document.getElementById('contact-text').textContent  = get('contact_text');
-
-  const rules = get('rules').split('\n').filter(r => r.trim());
-  document.getElementById('rules-list').innerHTML = rules.map(r => `<li>${r}</li>`).join('');
-
-  const meals = JSON.parse(get('meals'));
-  document.getElementById('meals-table-view').innerHTML = meals.map(m =>
-    `<tr><td>${m.name}</td><td>${m.days}</td><td>${m.time}</td></tr>`).join('');
-
-  const events = JSON.parse(get('events'));
-  document.getElementById('events-table-view').innerHTML = events.map(e =>
-    `<tr><td>${e.name}</td><td>${e.days}</td><td>${e.time}</td></tr>`).join('');
-
-  renderFeedbackQuestions();
-}
-
 // ===== DYNAMIC FEEDBACK QUESTIONS =====
-function renderFeedbackQuestions() {
-  const questions = JSON.parse(get('fb_questions'));
+function renderFeedbackQuestions(questions) {
   const container = document.getElementById('fb-questions-container');
   container.innerHTML = '';
   questions.forEach(q => {
     const uid = q.id.replace(/[^a-z0-9]/gi, '_');
     const div = document.createElement('div');
-    div.className = 'fb-question form-group';
+    div.className = 'form-group';
     div.innerHTML = `
       <label>${q.label}</label>
-      <div class="stars" id="stars-${uid}">
+      <div class="stars">
         <input type="radio" name="${uid}" id="${uid}5" value="5"><label for="${uid}5">★</label>
         <input type="radio" name="${uid}" id="${uid}4" value="4"><label for="${uid}4">★</label>
         <input type="radio" name="${uid}" id="${uid}3" value="3"><label for="${uid}3">★</label>
@@ -446,13 +386,14 @@ function setUrgency(level, btn) {
   btn.classList.add('selected');
 }
 
-// ===== FEEDBACK SUBMIT → BASE44 DB =====
+// ===== FEEDBACK SUBMIT → DB =====
 async function submitFeedback() {
   const name = document.getElementById('fb-name').value.trim();
   const room = document.getElementById('fb-room').value;
   if (!name || !room) { alert('Please fill in your name and room number'); return; }
 
-  const questions = JSON.parse(get('fb_questions'));
+  const fbQRaw = getVal('fb_questions');
+  const questions = fbQRaw ? JSON.parse(fbQRaw) : DEFAULTS.fb_questions;
   const ratings = {};
   questions.forEach(q => {
     const uid = q.id.replace(/[^a-z0-9]/gi, '_');
@@ -461,41 +402,27 @@ async function submitFeedback() {
   });
 
   const comments = document.getElementById('fb-comments').value.trim();
-
-  // Build payload for GuestFeedback entity
   const payload = {
-    guest_name:      name,
-    room_number:     room,
-    comments:        comments,
-    overall_rating:  ratings['Overall Rating'] ?? null,
-    cleanliness_rating: ratings['Cleanliness'] ?? null,
-    food_rating:     ratings['Food'] ?? null,
+    guest_name:           name,
+    room_number:          room,
+    comments:             comments,
+    overall_rating:       ratings['Overall Rating'] ?? null,
+    cleanliness_rating:   ratings['Cleanliness'] ?? null,
+    food_rating:          ratings['Food'] ?? null,
     communication_rating: ratings['Staff Communication'] ?? null,
-    // Store all custom questions as JSON in comments if extra fields exist
-    custom_ratings:  JSON.stringify(ratings)
+    custom_ratings:       JSON.stringify(ratings)
   };
 
   try {
-    const res = await fetch(BASE44_API, {
+    await fetch(FB_API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
+  } catch(e) { console.warn(e); }
 
-    if (res.ok || res.status === 201) {
-      document.getElementById('feedback-success').classList.add('show');
-      document.getElementById('feedback-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
-    } else {
-      // Fallback — still show success to guest even if API fails
-      console.warn('API error', res.status);
-      document.getElementById('feedback-success').classList.add('show');
-      document.getElementById('feedback-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
-    }
-  } catch(e) {
-    console.warn('Network error', e);
-    document.getElementById('feedback-success').classList.add('show');
-    document.getElementById('feedback-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
-  }
+  document.getElementById('feedback-success').classList.add('show');
+  document.getElementById('feedback-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
 }
 
 // ===== CONTACT / WHATSAPP =====
@@ -506,156 +433,18 @@ function submitContact() {
   const msg  = document.getElementById('ct-message').value.trim();
   if (!name || !room || !type || !msg) { alert('Please fill in all fields'); return; }
 
-  const whatsapp = get('whatsapp');
-  if (!whatsapp) { alert('WhatsApp number not configured.'); return; }
-
   const urgencyLabel = { low: '🟢 Normal', medium: '🟡 Medium', high: '🔴 URGENT' }[selectedUrgency];
   const typeLabel = document.getElementById('ct-type').options[document.getElementById('ct-type').selectedIndex].text;
   const text = `🏠 *HostelHub Guest Request*\n\n👤 *Guest:* ${name}\n🚪 *Room:* ${room}\n📋 *Type:* ${typeLabel}\n⚡ *Urgency:* ${urgencyLabel}\n\n💬 *Message:*\n${msg}`;
 
-  window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
+  window.open(`https://wa.me/${whatsappNum}?text=${encodeURIComponent(text)}`, '_blank');
   document.getElementById('contact-success').classList.add('show');
   document.getElementById('contact-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
 }
 
-// ===== ADMIN LOGIN =====
-function checkAdmin() {
-  if (document.getElementById('admin-pass').value === get('admin_pass')) {
-    document.getElementById('admin-gate-view').style.display = 'none';
-    document.getElementById('admin-content').style.display = 'block';
-    loadAdminFields();
-  } else {
-    document.getElementById('admin-error').style.display = 'block';
-  }
-}
-function adminLogout() {
-  document.getElementById('admin-content').style.display = 'none';
-  document.getElementById('admin-gate-view').style.display = 'block';
-  document.getElementById('admin-pass').value = '';
-}
-
-// ===== ADMIN FIELDS =====
-function loadAdminFields() {
-  document.getElementById('a-ssid').value       = get('wifi_ssid');
-  document.getElementById('a-wifi-pass').value  = get('wifi_pass');
-  document.getElementById('a-welcome').value    = get('welcome');
-  document.getElementById('a-rules').value      = get('rules');
-  document.getElementById('a-sched-notes').value= get('sched_notes');
-  document.getElementById('a-contact').value    = get('contact_text');
-  document.getElementById('a-whatsapp').value   = get('whatsapp');
-  renderSchedAdmin('meals');
-  renderSchedAdmin('events');
-  renderFbQuestionsAdmin();
-}
-
-// ===== SCHEDULE ADMIN =====
-function renderSchedAdmin(type) {
-  const rows = JSON.parse(get(type));
-  const container = document.getElementById('admin-' + type);
-  container.innerHTML = '';
-  const header = document.createElement('div');
-  header.className = 'sched-row';
-  header.innerHTML = `<small style="color:#6b7280;font-weight:600;">Name</small><small style="color:#6b7280;font-weight:600;">Days</small><small style="color:#6b7280;font-weight:600;">Time</small><span></span>`;
-  container.appendChild(header);
-  rows.forEach((row, i) => {
-    const div = document.createElement('div');
-    div.className = 'sched-row'; div.dataset.index = i;
-    div.innerHTML = `
-      <input type="text" value="${row.name}" data-field="name" />
-      <input type="text" value="${row.days}" data-field="days" />
-      <input type="text" value="${row.time}" data-field="time" />
-      <button class="del-btn" onclick="deleteSchedRow('${type}', ${i})">✕</button>`;
-    container.appendChild(div);
-  });
-}
-function addSchedRow(type) {
-  const rows = JSON.parse(get(type));
-  rows.push({ name: '', days: '', time: '' });
-  set(type, JSON.stringify(rows));
-  renderSchedAdmin(type);
-}
-function deleteSchedRow(type, index) {
-  const rows = JSON.parse(get(type));
-  rows.splice(index, 1);
-  set(type, JSON.stringify(rows));
-  renderSchedAdmin(type);
-  loadContent();
-}
-function saveSched(type) {
-  const container = document.getElementById('admin-' + type);
-  const rows = [];
-  container.querySelectorAll('.sched-row[data-index]').forEach(row => {
-    const obj = {};
-    row.querySelectorAll('input[data-field]').forEach(inp => { obj[inp.dataset.field] = inp.value; });
-    if (obj.name) rows.push(obj);
-  });
-  set(type, JSON.stringify(rows));
-  loadContent();
-  alert(`${type === 'meals' ? 'Meal' : 'Events'} schedule saved ✅`);
-}
-
-// ===== FEEDBACK QUESTIONS ADMIN =====
-function renderFbQuestionsAdmin() {
-  const questions = JSON.parse(get('fb_questions'));
-  const container = document.getElementById('admin-fb-questions');
-  container.innerHTML = '';
-  questions.forEach((q, i) => {
-    const div = document.createElement('div');
-    div.className = 'q-row';
-    div.dataset.index = i;
-    div.innerHTML = `
-      <input type="text" value="${q.label}" placeholder="e.g. Cleanliness, Food quality..." data-id="${q.id}" />
-      <button class="del-btn" onclick="deleteFbQuestion(${i})">✕</button>`;
-    container.appendChild(div);
-  });
-}
-function addFbQuestion() {
-  const questions = JSON.parse(get('fb_questions'));
-  const newId = 'q_' + Date.now();
-  questions.push({ id: newId, label: '' });
-  set('fb_questions', JSON.stringify(questions));
-  renderFbQuestionsAdmin();
-}
-function deleteFbQuestion(index) {
-  const questions = JSON.parse(get('fb_questions'));
-  questions.splice(index, 1);
-  set('fb_questions', JSON.stringify(questions));
-  renderFbQuestionsAdmin();
-  renderFeedbackQuestions();
-}
-function saveFbQuestions() {
-  const container = document.getElementById('admin-fb-questions');
-  const questions = [];
-  container.querySelectorAll('.q-row[data-index]').forEach(row => {
-    const inp = row.querySelector('input');
-    const label = inp.value.trim();
-    const id = inp.dataset.id || 'q_' + Date.now() + Math.random();
-    if (label) questions.push({ id, label });
-  });
-  set('fb_questions', JSON.stringify(questions));
-  renderFeedbackQuestions();
-  alert('Feedback questions saved ✅');
-}
-
-// ===== SAVE FUNCTIONS =====
-function saveWifi()       { set('wifi_ssid', document.getElementById('a-ssid').value); set('wifi_pass', document.getElementById('a-wifi-pass').value); loadContent(); alert('WiFi updated ✅'); }
-function saveWelcome()    { set('welcome', document.getElementById('a-welcome').value); loadContent(); alert('Welcome text updated ✅'); }
-function saveRules()      { set('rules', document.getElementById('a-rules').value); loadContent(); alert('House rules updated ✅'); }
-function saveSchedNotes() { set('sched_notes', document.getElementById('a-sched-notes').value); loadContent(); alert('Schedule notes updated ✅'); }
-function saveContact()    { set('contact_text', document.getElementById('a-contact').value); loadContent(); alert('Contact info updated ✅'); }
-function saveWhatsapp()   { set('whatsapp', document.getElementById('a-whatsapp').value.replace(/\D/g,'')); alert('WhatsApp number saved ✅'); }
-function changePass() {
-  const np = document.getElementById('a-new-pass').value;
-  const cp = document.getElementById('a-confirm-pass').value;
-  if (!np) { alert('Please enter a new password'); return; }
-  if (np !== cp) { alert('Passwords do not match'); return; }
-  set('admin_pass', np);
-  alert('Password changed successfully ✅');
-}
-
 // ===== INIT =====
 populateRoomSelects();
-loadContent();
+loadFromDB();
 </script>
 </body>
 </html>
