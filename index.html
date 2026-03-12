@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelHub — Guest Information</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a56db 0%, #0e3fa3 100%);
+      color: white;
+      padding: 28px 20px 22px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .header h1 { font-size: 2rem; font-weight: 700; letter-spacing: 1px; }
+    .header p { font-size: 1rem; opacity: 0.85; margin-top: 6px; }
+
+    .tabs {
+      display: flex;
+      overflow-x: auto;
+      background: white;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 0 12px;
+      gap: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      color: #64748b;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: #1a56db; }
+    .tab-btn.active { color: #1a56db; border-bottom-color: #1a56db; font-weight: 600; }
+
+    .content { max-width: 700px; margin: 0 auto; padding: 24px 16px 60px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      color: #1a56db;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card p, .card li { font-size: 0.97rem; line-height: 1.7; color: #374151; }
+    .card ul { padding-left: 18px; }
+
+    .wifi-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .wifi-icon { font-size: 2.2rem; }
+    .wifi-details strong { display: block; font-size: 0.9rem; color: #6b7280; }
+    .wifi-details span { font-size: 1.2rem; font-weight: 700; color: #1a56db; letter-spacing: 2px; }
+
+    .schedule-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .schedule-table th {
+      background: #1a56db;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    .schedule-table td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; font-size: 0.93rem; }
+    .schedule-table tr:last-child td { border-bottom: none; }
+    .schedule-table tr:nth-child(even) td { background: #f8fafc; }
+
+    .stars { display: flex; gap: 6px; flex-direction: row-reverse; justify-content: flex-start; margin-bottom: 6px; }
+    .stars input { display: none; }
+    .stars label { font-size: 1.8rem; cursor: pointer; color: #d1d5db; transition: color 0.2s; }
+    .stars input:checked ~ label,
+    .stars label:hover,
+    .stars label:hover ~ label { color: #f59e0b; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.88rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 0.97rem;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: #1a56db; }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+
+    .btn {
+      background: #1a56db;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      padding: 12px 26px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    .btn:hover { background: #1648c0; }
+
+    .urgency-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .urgency-btn {
+      flex: 1; min-width: 90px;
+      padding: 10px; border: 2px solid #e5e7eb;
+      border-radius: 9px; background: white; cursor: pointer;
+      font-family: inherit; font-size: 0.88rem; text-align: center;
+      transition: all 0.2s; color: #374151;
+    }
+    .urgency-btn:hover { border-color: #1a56db; }
+    .urgency-btn.selected { border-color: #1a56db; background: #eff6ff; color: #1a56db; font-weight: 600; }
+    .urgency-btn.urgent.selected { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
+
+    .success-msg {
+      display: none;
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      color: #16a34a;
+      font-weight: 600;
+      margin-top: 14px;
+    }
+    .success-msg.show { display: block; }
+
+    /* ADMIN */
+    .admin-gate { text-align: center; padding: 40px 20px; }
+    .admin-gate h2 { font-size: 1.3rem; margin-bottom: 20px; color: #374151; }
+    #admin-content { display: none; }
+    .admin-section {
+      background: white; border-radius: 14px; padding: 22px;
+      margin-bottom: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .admin-section h3 { font-size: 1rem; font-weight: 700; color: #1a56db; margin-bottom: 14px; }
+    .admin-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .admin-field label { font-size: 0.83rem; font-weight: 600; color: #6b7280; }
+    .admin-field input, .admin-field textarea {
+      border: 1px solid #d1d5db; border-radius: 8px; padding: 9px 12px;
+      font-family: inherit; font-size: 0.95rem; outline: none; transition: border 0.2s;
+    }
+    .admin-field input:focus, .admin-field textarea:focus { border-color: #1a56db; }
+    .admin-field textarea { min-height: 70px; resize: vertical; }
+    .save-btn {
+      background: #16a34a; color: white; border: none; border-radius: 8px;
+      padding: 9px 20px; font-size: 0.93rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: background 0.2s;
+    }
+    .save-btn:hover { background: #15803d; }
+    .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media(max-width:500px){ .admin-grid { grid-template-columns: 1fr; } }
+
+    /* Schedule edit rows */
+    .sched-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .sched-row input { border: 1px solid #d1d5db; border-radius: 6px; padding: 7px 10px; font-family: inherit; font-size: 0.88rem; outline: none; }
+    .sched-row input:focus { border-color: #1a56db; }
+    .del-btn { background: #fee2e2; border: none; border-radius: 6px; padding: 7px 10px; cursor: pointer; color: #dc2626; font-size: 0.9rem; }
+    .add-row-btn { background: #eff6ff; border: 1px dashed #93c5fd; border-radius: 8px; padding: 8px; width: 100%; cursor: pointer; color: #1a56db; font-size: 0.88rem; font-family: inherit; margin-top: 4px; }
+
+    @media (max-width: 480px) {
+      .header h1 { font-size: 1.5rem; }
+      .tab-btn { padding: 12px 10px; font-size: 0.84rem; }
+      .sched-row { grid-template-columns: 1fr 1fr; }
+      .sched-row input:nth-child(3) { grid-column: span 2; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏠 HostelHub</h1>
+  <p>Welcome! All the information you need, in one place.</p>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('info', this)">🏡 General Info</button>
+  <button class="tab-btn" onclick="showTab('wifi', this)">📶 WiFi</button>
+  <button class="tab-btn" onclick="showTab('schedule', this)">🕐 Schedule</button>
+  <button class="tab-btn" onclick="showTab('feedback', this)">⭐ Feedback</button>
+  <button class="tab-btn" onclick="showTab('contact', this)">💬 Contact Staff</button>
+  <button class="tab-btn" onclick="showTab('admin', this)">⚙️ Admin</button>
+</div>
+
+<div class="content">
+
+  <!-- INFO -->
+  <div class="tab-panel active" id="tab-info">
+    <div class="card">
+      <h2>👋 Welcome to the Hostel!</h2>
+      <p id="welcome-text">We're happy to have you here. This page has everything you need for a comfortable stay.</p>
+    </div>
+    <div class="card">
+      <h2>📋 House Rules</h2>
+      <ul id="rules-list">
+        <li>Quiet hours: 22:00 – 07:00</li>
+        <li>Please keep rooms and shared spaces clean</li>
+        <li>No smoking inside the building</li>
+        <li>Return keys by check-out time</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>📞 Contact</h2>
+      <p id="contact-text">For any question or request — use the "Contact Staff" tab or visit reception.</p>
+    </div>
+  </div>
+
+  <!-- WIFI -->
+  <div class="tab-panel" id="tab-wifi">
+    <div class="card">
+      <h2>📶 Internet Connection</h2>
+      <div class="wifi-box">
+        <div class="wifi-icon">📡</div>
+        <div class="wifi-details">
+          <strong>Network name (SSID)</strong>
+          <span id="wifi-ssid">HostelHub_Guest</span>
+          <strong style="margin-top:10px;">Password</strong>
+          <span id="wifi-password">1234</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>💡 Connection Tips</h2>
+      <ul>
+        <li>Select the network from your phone/computer WiFi list</li>
+        <li>Enter the password (case sensitive!)</li>
+        <li>Having trouble? Contact our staff</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div class="tab-panel" id="tab-schedule">
+    <div class="card">
+      <h2>🍽️ Meal Times</h2>
+      <table class="schedule-table">
+        <thead><tr><th>Meal</th><th>Days</th><th>Hours</th></tr></thead>
+        <tbody id="meals-table-view"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>🕍 Prayers & Meetings</h2>
+      <table class="schedule-table">
+        <thead><tr><th>Event</th><th>Days</th><th>Time</th></tr></thead>
+        <tbody id="events-table-view"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>📝 Schedule Notes</h2>
+      <p id="schedule-notes">Times may change — please check with staff for updates.</p>
+    </div>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div class="tab-panel" id="tab-feedback">
+    <div class="card">
+      <h2>⭐ Share Your Experience</h2>
+      <form id="feedback-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="fb-name" placeholder="John Smith" />
+        </div>
+        <div class="form-group">
+          <label>Room Number</label>
+          <select id="fb-room"><option value="">Select room...</option></select>
+        </div>
+        <div class="form-group">
+          <label>Cleanliness</label>
+          <div class="stars">
+            <input type="radio" name="clean" id="c5" value="5"><label for="c5">★</label>
+            <input type="radio" name="clean" id="c4" value="4"><label for="c4">★</label>
+            <input type="radio" name="clean" id="c3" value="3"><label for="c3">★</label>
+            <input type="radio" name="clean" id="c2" value="2"><label for="c2">★</label>
+            <input type="radio" name="clean" id="c1" value="1"><label for="c1">★</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Food</label>
+          <div class="stars">
+            <input type="radio" name="food" id="f5" value="5"><label for="f5">★</label>
+            <input type="radio" name="food" id="f4" value="4"><label for="f4">★</label>
+            <input type="radio" name="food" id="f3" value="3"><label for="f3">★</label>
+            <input type="radio" name="food" id="f2" value="2"><label for="f2">★</label>
+            <input type="radio" name="food" id="f1" value="1"><label for="f1">★</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Staff Communication</label>
+          <div class="stars">
+            <input type="radio" name="comm" id="co5" value="5"><label for="co5">★</label>
+            <input type="radio" name="comm" id="co4" value="4"><label for="co4">★</label>
+            <input type="radio" name="comm" id="co3" value="3"><label for="co3">★</label>
+            <input type="radio" name="comm" id="co2" value="2"><label for="co2">★</label>
+            <input type="radio" name="comm" id="co1" value="1"><label for="co1">★</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Overall Rating</label>
+          <div class="stars">
+            <input type="radio" name="overall" id="o5" value="5"><label for="o5">★</label>
+            <input type="radio" name="overall" id="o4" value="4"><label for="o4">★</label>
+            <input type="radio" name="overall" id="o3" value="3"><label for="o3">★</label>
+            <input type="radio" name="overall" id="o2" value="2"><label for="o2">★</label>
+            <input type="radio" name="overall" id="o1" value="1"><label for="o1">★</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Comments</label>
+          <textarea id="fb-comments" placeholder="Tell us about your stay..."></textarea>
+        </div>
+        <button type="button" class="btn" onclick="submitFeedback()">Send Feedback 💌</button>
+        <div class="success-msg" id="feedback-success">Thank you! Your feedback has been submitted ✅</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CONTACT STAFF -->
+  <div class="tab-panel" id="tab-contact">
+    <div class="card">
+      <h2>💬 Contact the Team</h2>
+      <form id="contact-form">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="ct-name" placeholder="John Smith" />
+        </div>
+        <div class="form-group">
+          <label>Room Number</label>
+          <select id="ct-room"><option value="">Select room...</option></select>
+        </div>
+        <div class="form-group">
+          <label>Request Type</label>
+          <select id="ct-type">
+            <option value="">Select type...</option>
+            <option value="maintenance">🔧 Maintenance / Repair</option>
+            <option value="cleaning">🧹 Cleaning</option>
+            <option value="plumbing">🚿 Plumbing</option>
+            <option value="electrical">⚡ Electrical</option>
+            <option value="ac">❄️ Air Conditioning</option>
+            <option value="internet">📶 Internet</option>
+            <option value="general">📋 General Request</option>
+            <option value="other">❓ Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Urgency</label>
+          <div class="urgency-btns">
+            <button type="button" class="urgency-btn" onclick="setUrgency('low', this)">🟢 Normal</button>
+            <button type="button" class="urgency-btn" onclick="setUrgency('medium', this)">🟡 Medium</button>
+            <button type="button" class="urgency-btn urgent" onclick="setUrgency('high', this)">🔴 Urgent!</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="ct-message" placeholder="Describe your issue or request in detail..."></textarea>
+        </div>
+        <button type="button" class="btn" onclick="submitContact()">Send Message 📨</button>
+        <div class="success-msg" id="contact-success">
+          Your message was sent! The team will respond as soon as possible ✅
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="tab-panel" id="tab-admin">
+    <div id="admin-gate-view" class="admin-gate">
+      <h2>🔐 Administrator Login</h2>
+      <div class="form-group" style="max-width:300px; margin:0 auto;">
+        <label>Admin Password</label>
+        <input type="password" id="admin-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter') checkAdmin()" />
+      </div>
+      <button class="btn" style="max-width:300px; margin:14px auto 0; display:block;" onclick="checkAdmin()">Login</button>
+      <p id="admin-error" style="color:#dc2626; margin-top:10px; display:none;">Incorrect password</p>
+    </div>
+
+    <div id="admin-content">
+
+      <div class="admin-section">
+        <h3>📶 WiFi Settings</h3>
+        <div class="admin-grid">
+          <div class="admin-field"><label>Network Name (SSID)</label><input id="a-ssid" type="text" /></div>
+          <div class="admin-field"><label>Password</label><input id="a-wifi-pass" type="text" /></div>
+        </div>
+        <button class="save-btn" onclick="saveWifi()">Save WiFi</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>👋 Welcome Text</h3>
+        <div class="admin-field"><textarea id="a-welcome" rows="3"></textarea></div>
+        <button class="save-btn" onclick="saveWelcome()">Save</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>📋 House Rules</h3>
+        <div class="admin-field"><label>One rule per line</label><textarea id="a-rules" rows="5"></textarea></div>
+        <button class="save-btn" onclick="saveRules()">Save</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>📞 Contact Info Text</h3>
+        <div class="admin-field"><textarea id="a-contact" rows="3"></textarea></div>
+        <button class="save-btn" onclick="saveContact()">Save</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>🍽️ Meal Schedule</h3>
+        <div id="admin-meals"></div>
+        <button class="add-row-btn" onclick="addSchedRow('meals')">+ Add Row</button>
+        <br/><br/>
+        <button class="save-btn" onclick="saveSched('meals')">Save Meals</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>🕍 Prayers & Meetings Schedule</h3>
+        <div id="admin-events"></div>
+        <button class="add-row-btn" onclick="addSchedRow('events')">+ Add Row</button>
+        <br/><br/>
+        <button class="save-btn" onclick="saveSched('events')">Save Schedule</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>📝 Schedule Notes</h3>
+        <div class="admin-field"><textarea id="a-sched-notes" rows="3"></textarea></div>
+        <button class="save-btn" onclick="saveSchedNotes()">Save</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>📱 WhatsApp Staff Number</h3>
+        <div class="admin-field">
+          <label>International format (e.g. 972501234567 — no + or spaces)</label>
+          <input id="a-whatsapp" type="text" placeholder="972501234567" />
+        </div>
+        <button class="save-btn" onclick="saveWhatsapp()">Save</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>🔑 Change Admin Password</h3>
+        <div class="admin-grid">
+          <div class="admin-field"><label>New Password</label><input id="a-new-pass" type="password" /></div>
+          <div class="admin-field"><label>Confirm</label><input id="a-confirm-pass" type="password" /></div>
+        </div>
+        <button class="save-btn" onclick="changePass()">Change Password</button>
+      </div>
+
+      <div style="text-align:center; margin-top:10px;">
+        <button onclick="adminLogout()" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:0.95rem;">🚪 Logout</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== DEFAULTS =====
+const DEFAULTS = {
+  wifi_ssid: 'HostelHub_Guest',
+  wifi_pass: '1234',
+  welcome: "We're happy to have you here. This page has everything you need for a comfortable stay.",
+  rules: "Quiet hours: 22:00 – 07:00\nPlease keep rooms and shared spaces clean\nNo smoking inside the building\nReturn keys by check-out time",
+  sched_notes: "Times may change — please check with staff for updates.",
+  contact_text: 'For any question or request — use the "Contact Staff" tab or visit reception.',
+  admin_pass: 'admin123',
+  whatsapp: '972584400114',
+  meals: JSON.stringify([
+    { name: 'Breakfast', days: 'Sun–Fri', time: '07:00 – 09:00' },
+    { name: 'Lunch', days: 'Sun–Fri', time: '12:30 – 14:00' },
+    { name: 'Dinner', days: 'Sun–Fri', time: '18:30 – 20:00' },
+    { name: 'Shabbat Breakfast', days: 'Saturday', time: '09:00 – 10:30' }
+  ]),
+  events: JSON.stringify([
+    { name: 'Shacharit', days: 'Sun–Fri', time: '06:45' },
+    { name: 'Mincha/Maariv', days: 'Daily', time: 'Sunset' },
+    { name: 'Evening Lecture', days: 'Sun–Thu', time: '21:00 – 22:00' }
+  ])
+};
+
+function get(key) { return localStorage.getItem('hh_' + key) ?? DEFAULTS[key]; }
+function set(key, val) { localStorage.setItem('hh_' + key, val); }
+
+// ===== ROOM LIST =====
+const ROOMS = [];
+for (let i = 11; i <= 31; i++) ROOMS.push('A-' + i);
+for (let i = 11; i <= 28; i++) ROOMS.push('B-' + i);
+
+function populateRoomSelects() {
+  ['fb-room', 'ct-room'].forEach(id => {
+    const sel = document.getElementById(id);
+    ROOMS.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r; opt.textContent = r;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+// ===== TABS =====
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else document.querySelector(`[onclick*="'${name}'"]`)?.classList.add('active');
+}
+
+// ===== LOAD CONTENT =====
+function loadContent() {
+  document.getElementById('wifi-ssid').textContent = get('wifi_ssid');
+  document.getElementById('wifi-password').textContent = get('wifi_pass');
+  document.getElementById('welcome-text').textContent = get('welcome');
+  document.getElementById('schedule-notes').textContent = get('sched_notes');
+  document.getElementById('contact-text').textContent = get('contact_text');
+
+  const rules = get('rules').split('\n').filter(r => r.trim());
+  document.getElementById('rules-list').innerHTML = rules.map(r => `<li>${r}</li>`).join('');
+
+  // meals table
+  const meals = JSON.parse(get('meals'));
+  document.getElementById('meals-table-view').innerHTML = meals.map(m =>
+    `<tr><td>${m.name}</td><td>${m.days}</td><td>${m.time}</td></tr>`).join('');
+
+  // events table
+  const events = JSON.parse(get('events'));
+  document.getElementById('events-table-view').innerHTML = events.map(e =>
+    `<tr><td>${e.name}</td><td>${e.days}</td><td>${e.time}</td></tr>`).join('');
+}
+
+// ===== URGENCY =====
+let selectedUrgency = 'low';
+function setUrgency(level, btn) {
+  selectedUrgency = level;
+  document.querySelectorAll('.urgency-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ===== FEEDBACK =====
+function submitFeedback() {
+  const name = document.getElementById('fb-name').value.trim();
+  const room = document.getElementById('fb-room').value;
+  if (!name || !room) { alert('Please fill in your name and room number'); return; }
+  document.getElementById('feedback-success').classList.add('show');
+  document.getElementById('feedback-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
+}
+
+// ===== CONTACT / WHATSAPP =====
+function submitContact() {
+  const name = document.getElementById('ct-name').value.trim();
+  const room = document.getElementById('ct-room').value;
+  const type = document.getElementById('ct-type').value;
+  const msg  = document.getElementById('ct-message').value.trim();
+  if (!name || !room || !type || !msg) { alert('Please fill in all fields'); return; }
+
+  const whatsapp = get('whatsapp');
+  if (!whatsapp) {
+    alert('WhatsApp number not configured. Please contact the admin.');
+    return;
+  }
+
+  const urgencyLabel = { low: '🟢 Normal', medium: '🟡 Medium', high: '🔴 URGENT' }[selectedUrgency];
+  const typeLabel = document.getElementById('ct-type').options[document.getElementById('ct-type').selectedIndex].text;
+
+  const text = `🏠 *HostelHub Guest Request*\n\n👤 *Guest:* ${name}\n🚪 *Room:* ${room}\n📋 *Type:* ${typeLabel}\n⚡ *Urgency:* ${urgencyLabel}\n\n💬 *Message:*\n${msg}`;
+
+  const encoded = encodeURIComponent(text);
+  const waUrl = `https://wa.me/${whatsapp}?text=${encoded}`;
+
+  window.open(waUrl, '_blank');
+  document.getElementById('contact-success').classList.add('show');
+  document.getElementById('contact-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
+}
+
+// ===== ADMIN LOGIN =====
+function checkAdmin() {
+  if (document.getElementById('admin-pass').value === get('admin_pass')) {
+    document.getElementById('admin-gate-view').style.display = 'none';
+    document.getElementById('admin-content').style.display = 'block';
+    loadAdminFields();
+  } else {
+    document.getElementById('admin-error').style.display = 'block';
+  }
+}
+function adminLogout() {
+  document.getElementById('admin-content').style.display = 'none';
+  document.getElementById('admin-gate-view').style.display = 'block';
+  document.getElementById('admin-pass').value = '';
+}
+
+// ===== ADMIN FIELDS =====
+function loadAdminFields() {
+  document.getElementById('a-ssid').value = get('wifi_ssid');
+  document.getElementById('a-wifi-pass').value = get('wifi_pass');
+  document.getElementById('a-welcome').value = get('welcome');
+  document.getElementById('a-rules').value = get('rules');
+  document.getElementById('a-sched-notes').value = get('sched_notes');
+  document.getElementById('a-contact').value = get('contact_text');
+  document.getElementById('a-whatsapp').value = get('whatsapp');
+  renderSchedAdmin('meals');
+  renderSchedAdmin('events');
+}
+
+// ===== SCHEDULE ADMIN =====
+function renderSchedAdmin(type) {
+  const rows = JSON.parse(get(type));
+  const container = document.getElementById('admin-' + type);
+  container.innerHTML = '';
+
+  // header
+  const header = document.createElement('div');
+  header.className = 'sched-row';
+  header.innerHTML = `<small style="color:#6b7280;font-weight:600;">Name</small><small style="color:#6b7280;font-weight:600;">Days</small><small style="color:#6b7280;font-weight:600;">Time</small><span></span>`;
+  container.appendChild(header);
+
+  rows.forEach((row, i) => {
+    const div = document.createElement('div');
+    div.className = 'sched-row';
+    div.dataset.index = i;
+    div.innerHTML = `
+      <input type="text" value="${row.name}" data-field="name" />
+      <input type="text" value="${row.days}" data-field="days" />
+      <input type="text" value="${row.time}" data-field="time" />
+      <button class="del-btn" onclick="deleteSchedRow('${type}', ${i})">✕</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function addSchedRow(type) {
+  const rows = JSON.parse(get(type));
+  rows.push({ name: '', days: '', time: '' });
+  set(type, JSON.stringify(rows));
+  renderSchedAdmin(type);
+}
+
+function deleteSchedRow(type, index) {
+  const rows = JSON.parse(get(type));
+  rows.splice(index, 1);
+  set(type, JSON.stringify(rows));
+  renderSchedAdmin(type);
+  loadContent();
+}
+
+function saveSched(type) {
+  const container = document.getElementById('admin-' + type);
+  const rows = [];
+  container.querySelectorAll('.sched-row[data-index]').forEach(row => {
+    const obj = {};
+    row.querySelectorAll('input[data-field]').forEach(inp => { obj[inp.dataset.field] = inp.value; });
+    if (obj.name) rows.push(obj);
+  });
+  set(type, JSON.stringify(rows));
+  loadContent();
+  alert(`${type === 'meals' ? 'Meal' : 'Events'} schedule saved ✅`);
+}
+
+// ===== SAVE FUNCTIONS =====
+function saveWifi() {
+  set('wifi_ssid', document.getElementById('a-ssid').value);
+  set('wifi_pass', document.getElementById('a-wifi-pass').value);
+  loadContent(); alert('WiFi updated ✅');
+}
+function saveWelcome() {
+  set('welcome', document.getElementById('a-welcome').value);
+  loadContent(); alert('Welcome text updated ✅');
+}
+function saveRules() {
+  set('rules', document.getElementById('a-rules').value);
+  loadContent(); alert('House rules updated ✅');
+}
+function saveSchedNotes() {
+  set('sched_notes', document.getElementById('a-sched-notes').value);
+  loadContent(); alert('Schedule notes updated ✅');
+}
+function saveContact() {
+  set('contact_text', document.getElementById('a-contact').value);
+  loadContent(); alert('Contact info updated ✅');
+}
+function saveWhatsapp() {
+  const num = document.getElementById('a-whatsapp').value.replace(/\D/g,'');
+  set('whatsapp', num);
+  alert('WhatsApp number saved ✅');
+}
+function changePass() {
+  const np = document.getElementById('a-new-pass').value;
+  const cp = document.getElementById('a-confirm-pass').value;
+  if (!np) { alert('Please enter a new password'); return; }
+  if (np !== cp) { alert('Passwords do not match'); return; }
+  set('admin_pass', np);
+  alert('Password changed successfully ✅');
+}
+
+// ===== INIT =====
+populateRoomSelects();
+loadContent();
+</script>
+</body>
+</html>
