@@ -1,450 +1,539 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HostelHub — Guest Information</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>OHC Rooms ג€” ׳₪׳•׳¨׳˜׳ ׳׳•׳¨׳—׳™׳</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; }
-    .header { background: linear-gradient(135deg, #1a56db 0%, #0e3fa3 100%); color: white; padding: 28px 20px 22px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
-    .header h1 { font-size: 2rem; font-weight: 700; letter-spacing: 1px; }
-    .header p { font-size: 1rem; opacity: 0.85; margin-top: 6px; }
-    .tabs { display: flex; overflow-x: auto; background: white; border-bottom: 2px solid #e2e8f0; padding: 0 12px; gap: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tab-btn { flex-shrink: 0; background: none; border: none; padding: 14px 16px; cursor: pointer; font-size: 0.92rem; color: #64748b; border-bottom: 3px solid transparent; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
-    .tab-btn:hover { color: #1a56db; }
-    .tab-btn.active { color: #1a56db; border-bottom-color: #1a56db; font-weight: 600; }
-    .content { max-width: 700px; margin: 0 auto; padding: 24px 16px 60px; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-    .card { background: white; border-radius: 14px; padding: 22px 20px; margin-bottom: 18px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
-    .card h2 { font-size: 1.1rem; color: #1a56db; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-    .card p, .card li { font-size: 0.97rem; line-height: 1.7; color: #374151; }
-    .card ul { padding-left: 18px; }
-    .wifi-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
-    .wifi-icon { font-size: 2.2rem; }
-    .wifi-details strong { display: block; font-size: 0.9rem; color: #6b7280; }
-    .wifi-details span { font-size: 1.2rem; font-weight: 700; color: #1a56db; letter-spacing: 2px; }
-    .schedule-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    .schedule-table th { background: #1a56db; color: white; padding: 10px 14px; text-align: left; font-size: 0.88rem; }
-    .schedule-table td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; font-size: 0.93rem; }
-    .schedule-table tr:last-child td { border-bottom: none; }
-    .schedule-table tr:nth-child(even) td { background: #f8fafc; }
-    .stars { display: flex; gap: 6px; flex-direction: row-reverse; justify-content: flex-start; margin-bottom: 6px; }
-    .stars input { display: none; }
-    .stars label { font-size: 1.8rem; cursor: pointer; color: #d1d5db; transition: color 0.2s; }
-    .stars input:checked ~ label, .stars label:hover, .stars label:hover ~ label { color: #f59e0b; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 0.88rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 13px; font-size: 0.97rem; font-family: inherit; outline: none; transition: border 0.2s; }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #1a56db; }
-    .form-group textarea { resize: vertical; min-height: 90px; }
-    .btn { background: #1a56db; color: white; border: none; border-radius: 9px; padding: 12px 26px; font-size: 1rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; width: 100%; }
-    .btn:hover { background: #1648c0; }
-    .urgency-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-    .urgency-btn { flex: 1; min-width: 90px; padding: 10px; border: 2px solid #e5e7eb; border-radius: 9px; background: white; cursor: pointer; font-family: inherit; font-size: 0.88rem; text-align: center; transition: all 0.2s; color: #374151; }
-    .urgency-btn:hover { border-color: #1a56db; }
-    .urgency-btn.selected { border-color: #1a56db; background: #eff6ff; color: #1a56db; font-weight: 600; }
-    .urgency-btn.urgent.selected { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
-    .success-msg { display: none; background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 16px; text-align: center; color: #16a34a; font-weight: 600; margin-top: 14px; }
-    .success-msg.show { display: block; }
-    .loading-spinner { text-align: center; padding: 40px; color: #94a3b8; font-size: 1rem; }
-    @media (max-width: 480px) {
-      .header h1 { font-size: 1.5rem; }
-      .tab-btn { padding: 12px 10px; font-size: 0.84rem; }
-    }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f3f4f6; }
+    .tab-active { color: #2563eb; }
+    .tab-inactive { color: #9ca3af; }
+    .star-btn { width:40px;height:40px;border-radius:50%;font-weight:700;font-size:14px;transition:all .15s; }
+    .star-active { background:#facc15;color:#fff;transform:scale(1.1); }
+    .star-inactive { background:#f3f4f6;color:#6b7280; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .animate-pulse { animation: pulse 1.5s infinite; }
   </style>
 </head>
-<body>
+<body class="min-h-screen bg-gray-100">
 
-<div class="header">
-  <h1>🏠 HostelHub</h1>
-  <p>Welcome! All the information you need, in one place.</p>
-</div>
-
-<div class="tabs">
-  <button class="tab-btn active" onclick="showTab('info', this)">🏡 General Info</button>
-  <button class="tab-btn" onclick="showTab('wifi', this)">📶 WiFi</button>
-  <button class="tab-btn" onclick="showTab('schedule', this)">🕐 Schedule</button>
-  <button class="tab-btn" onclick="showTab('feedback', this)">⭐ Feedback</button>
-  <button class="tab-btn" onclick="showTab('contact', this)">💬 Contact Staff</button>
-</div>
-
-<div class="content">
-
-  <!-- INFO -->
-  <div class="tab-panel active" id="tab-info">
-    <div class="card">
-      <h2>👋 Welcome to the Hostel!</h2>
-      <p id="welcome-text"><span class="loading-spinner">Loading...</span></p>
+<!-- Header -->
+<header class="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-4 py-4 shadow-md sticky top-0 z-40">
+  <div class="max-w-lg mx-auto flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold">OHC Rooms</h1>
+      <p class="text-blue-200 text-xs" id="todayDate"></p>
     </div>
-    <div class="card">
-      <h2>📋 House Rules</h2>
-      <ul id="rules-list"><li style="color:#94a3b8">Loading...</li></ul>
-    </div>
-    <div class="card">
-      <h2>📞 Contact</h2>
-      <p id="contact-text"><span style="color:#94a3b8">Loading...</span></p>
+    <div id="weatherWidget" class="text-right hidden">
+      <p class="text-2xl font-bold" id="wTemp"></p>
+      <p class="text-blue-200 text-xs" id="wDesc"></p>
     </div>
   </div>
+</header>
 
-  <!-- WIFI -->
-  <div class="tab-panel" id="tab-wifi">
-    <div class="card">
-      <h2>📶 Internet Connection</h2>
-      <div class="wifi-box">
-        <div class="wifi-icon">📡</div>
-        <div class="wifi-details">
-          <strong>Network name (SSID)</strong>
-          <span id="wifi-ssid">Loading...</span>
-          <strong style="margin-top:10px;">Password</strong>
-          <span id="wifi-password">Loading...</span>
+<!-- Main -->
+<main class="max-w-lg mx-auto px-4 py-5 pb-28" id="mainContent">
+  <div class="text-center py-16 text-gray-400 animate-pulse">׳˜׳•׳¢׳...</div>
+</main>
+
+<!-- Bottom Nav -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2 z-50 shadow-lg">
+  <button onclick="showTab('home')" id="nav-home" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-active">
+    <span class="text-xl">נ </span><span class="text-[10px] font-semibold">׳‘׳™׳×</span>
+  </button>
+  <button onclick="showTab('schedule')" id="nav-schedule" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">נ“…</span><span class="text-[10px] font-semibold">׳׳•׳— ׳–׳׳ ׳™׳</span>
+  </button>
+  <button onclick="showTab('explore')" id="nav-explore" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">נ—÷ן¸</span><span class="text-[10px] font-semibold">׳׳’׳׳•׳×</span>
+  </button>
+  <button onclick="showTab('checkin')" id="nav-checkin" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">ג…</span><span class="text-[10px] font-semibold">׳¦'׳§-׳׳™׳</span>
+  </button>
+  <button onclick="showTab('contact')" id="nav-contact" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">נ“</span><span class="text-[10px] font-semibold">׳¦׳•׳¨ ׳§׳©׳¨</span>
+  </button>
+  <button onclick="showTab('feedback')" id="nav-feedback" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">ג­</span><span class="text-[10px] font-semibold">׳₪׳™׳“׳‘׳§</span>
+  </button>
+</nav>
+
+<script>
+// ג”€ג”€ג”€ Config ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+const BASE44_APP_ID = "68e60777e6063534b86e840a";
+const BASE44_API = "https://api.base44.com/api/apps/" + BASE44_APP_ID + "/entities";
+
+// ג”€ג”€ג”€ State ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+let appData = { content:{}, messages:[], attractions:[], rota:[] };
+let currentTab = "home";
+let feedbackRatings = {};
+let checkoutDate = localStorage.getItem("guest_checkout") || "";
+
+// ג”€ג”€ג”€ Init ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+document.addEventListener("DOMContentLoaded", async () => {
+  setTodayDate();
+  fetchWeather();
+  await loadAllData();
+  renderTab("home");
+});
+
+function setTodayDate() {
+  const d = new Date();
+  document.getElementById("todayDate").textContent = d.toLocaleDateString("he-IL", { weekday:"long", day:"numeric", month:"long" });
+}
+
+async function fetchWeather() {
+  try {
+    const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=32.853&longitude=35.142&current=temperature_2m,weathercode,windspeed_10m,relative_humidity_2m&timezone=Asia%2FJerusalem");
+    const data = await r.json();
+    const c = data.current;
+    const codes = {0:"ג˜€ן¸ ׳©׳׳©׳™",1:"נ₪ן¸ ׳‘׳”׳™׳¨ ׳‘׳¨׳•׳‘",2:"ג›… ׳׳¢׳•׳ ׳ ׳—׳׳§׳™׳×",3:"ג˜ן¸ ׳׳¢׳•׳ ׳",45:"נ«ן¸ ׳¢׳¨׳₪׳",48:"נ«ן¸ ׳¢׳¨׳₪׳",51:"נ¦ן¸ ׳’׳©׳ ׳§׳",53:"נ§ן¸ ׳’׳©׳",55:"נ§ן¸ ׳’׳©׳ ׳›׳‘׳“",61:"נ¦ן¸ ׳’׳©׳ ׳§׳",63:"נ§ן¸ ׳’׳©׳",65:"נ§ן¸ ׳’׳©׳ ׳›׳‘׳“",80:"נ¦ן¸ ׳’׳©׳",95:"ג›ˆן¸ ׳¡׳•׳₪׳× ׳‘׳¨׳§׳™׳"};
+    const desc = codes[c.weathercode] || "נ¡ן¸";
+    document.getElementById("wTemp").textContent = Math.round(c.temperature_2m) + "ֲ°C";
+    document.getElementById("wDesc").textContent = desc;
+    document.getElementById("weatherWidget").classList.remove("hidden");
+  } catch(e) {}
+}
+
+async function apiGet(entity, params="") {
+  try {
+    const r = await fetch(`${BASE44_API}/${entity}/?${params}`, {
+      headers: { "Content-Type": "application/json" }
+    });
+    if (!r.ok) return [];
+    return await r.json();
+  } catch { return []; }
+}
+
+async function apiPost(entity, data) {
+  const r = await fetch(`${BASE44_API}/${entity}/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return r.ok;
+}
+
+async function loadAllData() {
+  const [content, messages, attractions, rota] = await Promise.all([
+    apiGet("LandingPageContent", "order_by=order_index"),
+    apiGet("StaffMessage"),
+    apiGet("Attraction"),
+    apiGet("StaffRota"),
+  ]);
+  const map = {};
+  (content||[]).forEach(r => { map[r.section_type] = r; });
+  appData = { content: map, messages: messages||[], attractions: attractions||[], rota: rota||[] };
+}
+
+function getContent(key, fallback="") {
+  return appData.content[key]?.content || fallback;
+}
+
+function getJSON(key, fallback=null) {
+  try { return JSON.parse(getContent(key,"null")) || fallback; } catch { return fallback; }
+}
+
+// ג”€ג”€ג”€ Tab Routing ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll("nav button").forEach(b => {
+    b.className = b.id === "nav-"+tab
+      ? "flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-active"
+      : "flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive";
+  });
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  const main = document.getElementById("mainContent");
+  const renders = { home: renderHome, schedule: renderSchedule, explore: renderExplore, checkin: renderCheckin, contact: renderContact, feedback: renderFeedback };
+  main.innerHTML = renders[tab] ? renders[tab]() : "";
+  afterRender(tab);
+}
+
+function afterRender(tab) {
+  if (tab === "home") {
+    setupCheckoutInput();
+    startCountdown();
+  }
+  if (tab === "feedback") setupFeedback();
+  if (tab === "checkin") setupCheckin();
+}
+
+// ג”€ג”€ג”€ HOME ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+function renderHome() {
+  const wifi = getJSON("wifi", { ssid:"HostelHub_Guest", pass:"1234" });
+  const rules = getContent("rules","").split("\n").filter(Boolean);
+  const welcomeText = getContent("welcome", "׳©׳׳—׳™׳ ׳׳׳¨׳— ׳׳×׳›׳! ׳”׳“׳£ ׳”׳–׳” ׳™׳¢׳–׳•׳¨ ׳׳›׳ ׳׳§׳‘׳ ׳׳× ׳›׳ ׳”׳׳™׳“׳¢ ׳׳©׳”׳™׳™׳” ׳ ׳¢׳™׳׳”.");
+
+  const activeMessages = appData.messages.filter(m => {
+    if (!m.is_active) return false;
+    if (m.expires_at && new Date(m.expires_at) < new Date()) return false;
+    return true;
+  });
+  const bgColors = { normal:"bg-blue-50 border-blue-200 text-blue-800", important:"bg-yellow-50 border-yellow-300 text-yellow-800", urgent:"bg-red-50 border-red-300 text-red-800" };
+
+  const todayRota = appData.rota.filter(s => s.shift_date === new Date().toISOString().split("T")[0]);
+
+  return `
+    ${activeMessages.map(m => `
+      <div class="border rounded-2xl p-4 mb-3 ${bgColors[m.priority||'normal']}">
+        <p class="font-bold text-sm">${esc(m.title)}</p>
+        <p class="text-sm mt-1 opacity-80">${esc(m.body)}</p>
+      </div>
+    `).join("")}
+
+    ${checkoutDate ? `
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-center justify-between">
+        <div>
+          <p class="text-sm font-semibold text-amber-700">ג±ן¸ ׳¢׳“ ׳”׳¦'׳§-׳׳׳•׳˜</p>
+          <p class="text-xs text-amber-500">׳¦'׳§-׳׳׳•׳˜ ׳¢׳“ 11:00</p>
+        </div>
+        <div class="text-left">
+          <p class="text-2xl font-bold text-amber-700" id="countdownDisplay">...</p>
+          <button onclick="clearCheckout()" class="text-xs text-amber-400 underline">׳ ׳§׳”</button>
+        </div>
+      </div>
+    ` : `
+      <div class="bg-white rounded-2xl border p-4 mb-4">
+        <p class="text-sm font-semibold text-gray-600 mb-2">נ“… ׳׳×׳™ ׳”׳¦'׳§-׳׳׳•׳˜ ׳©׳׳?</p>
+        <input type="date" id="checkoutInput" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" value="${checkoutDate}" />
+      </div>
+    `}
+
+    <div class="bg-white rounded-2xl border p-5 mb-4">
+      <h2 class="text-lg font-bold text-gray-800 mb-2">׳‘׳¨׳•׳›׳™׳ ׳”׳‘׳׳™׳ נ‘‹</h2>
+      <p class="text-gray-600 text-sm leading-relaxed">${esc(welcomeText)}</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border p-5 mb-4">
+      <h3 class="font-bold text-gray-800 mb-3">נ“¶ WiFi</h3>
+      <div class="space-y-2">
+        <div class="flex justify-between items-center bg-gray-50 rounded-xl px-4 py-2">
+          <span class="text-sm text-gray-500">׳©׳ ׳”׳¨׳©׳×</span>
+          <span class="font-bold text-gray-800">${esc(wifi.ssid||"")}</span>
+        </div>
+        <div class="flex justify-between items-center bg-blue-50 rounded-xl px-4 py-2">
+          <span class="text-sm text-gray-500">׳¡׳™׳¡׳׳”</span>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-blue-700" id="wifiPass">${esc(wifi.pass||"")}</span>
+            <button onclick="copyWifi('${esc(wifi.pass||'')}')" class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-lg">׳”׳¢׳×׳§</button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="card">
-      <h2>💡 Connection Tips</h2>
-      <ul>
-        <li>Select the network from your phone/computer WiFi list</li>
-        <li>Enter the password (case sensitive!)</li>
-        <li>Having trouble? Contact our staff</li>
-      </ul>
-    </div>
-  </div>
 
-  <!-- SCHEDULE -->
-  <div class="tab-panel" id="tab-schedule">
-    <div class="card">
-      <h2>🍽️ Meal Times</h2>
-      <table class="schedule-table">
-        <thead><tr><th>Meal</th><th>Days</th><th>Hours</th></tr></thead>
-        <tbody id="meals-table-view"><tr><td colspan="3" style="color:#94a3b8;text-align:center">Loading...</td></tr></tbody>
-      </table>
-    </div>
-    <div class="card">
-      <h2>🕍 Prayers &amp; Meetings</h2>
-      <table class="schedule-table">
-        <thead><tr><th>Event</th><th>Days</th><th>Time</th></tr></thead>
-        <tbody id="events-table-view"><tr><td colspan="3" style="color:#94a3b8;text-align:center">Loading...</td></tr></tbody>
-      </table>
-    </div>
-    <div class="card">
-      <p id="schedule-notes" style="color:#64748b; font-size:0.9rem;"></p>
-    </div>
-  </div>
+    ${rules.length > 0 ? `
+      <div class="bg-white rounded-2xl border p-5 mb-4">
+        <h3 class="font-bold text-gray-800 mb-3">נ“‹ ׳›׳׳׳™ ׳”׳‘׳™׳×</h3>
+        <ul class="space-y-2">
+          ${rules.map(r => `<li class="flex items-start gap-2 text-sm text-gray-700"><span class="text-blue-500 mt-0.5">ג€¢</span> ${esc(r)}</li>`).join("")}
+        </ul>
+      </div>
+    ` : ""}
 
-  <!-- FEEDBACK -->
-  <div class="tab-panel" id="tab-feedback">
-    <div class="card">
-      <h2>⭐ Share Your Experience</h2>
-      <form id="feedback-form">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="fb-name" placeholder="John Smith" />
+    ${todayRota.length > 0 ? `
+      <div class="bg-white rounded-2xl border p-5 mb-4">
+        <h3 class="font-bold text-gray-800 mb-3">נ‘¥ ׳¦׳•׳•׳× ׳”׳™׳•׳</h3>
+        <div class="space-y-2">
+          ${todayRota.map(s => `
+            <div class="flex items-center justify-between bg-blue-50 rounded-xl px-4 py-2">
+              <div>
+                <p class="font-bold text-sm text-gray-800">${esc(s.staff_name)}</p>
+                <p class="text-xs text-gray-500">${esc(s.role)}${s.shift_start ? ' ג€¢ '+s.shift_start+'ג€“'+s.shift_end : ''}</p>
+              </div>
+              ${s.phone ? `<a href="tel:${esc(s.phone)}" class="text-blue-600 text-sm font-semibold">${esc(s.phone)}</a>` : ""}
+            </div>
+          `).join("")}
         </div>
-        <div class="form-group">
-          <label>Room Number</label>
-          <select id="fb-room"><option value="">Select room...</option></select>
-        </div>
-        <div id="fb-questions-container"></div>
-        <div class="form-group">
-          <label>Comments</label>
-          <textarea id="fb-comments" placeholder="Tell us about your stay..."></textarea>
-        </div>
-        <button type="button" class="btn" onclick="submitFeedback()">Send Feedback 💌</button>
-        <div class="success-msg" id="feedback-success">Thank you! Your feedback has been submitted ✅</div>
-      </form>
-    </div>
-  </div>
+      </div>
+    ` : ""}
+  `;
+}
 
-  <!-- CONTACT STAFF -->
-  <div class="tab-panel" id="tab-contact">
-    <div class="card">
-      <h2>💬 Contact the Team</h2>
-      <form id="contact-form">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" id="ct-name" placeholder="John Smith" />
-        </div>
-        <div class="form-group">
-          <label>Room Number</label>
-          <select id="ct-room"><option value="">Select room...</option></select>
-        </div>
-        <div class="form-group">
-          <label>Request Type</label>
-          <select id="ct-type">
-            <option value="">Select type...</option>
-            <option value="maintenance">🔧 Maintenance / Repair</option>
-            <option value="cleaning">🧹 Cleaning</option>
-            <option value="plumbing">🚿 Plumbing</option>
-            <option value="electrical">⚡ Electrical</option>
-            <option value="ac">❄️ Air Conditioning</option>
-            <option value="internet">📶 Internet</option>
-            <option value="general">📋 General Request</option>
-            <option value="other">❓ Other</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Urgency</label>
-          <div class="urgency-btns">
-            <button type="button" class="urgency-btn" onclick="setUrgency('low', this)">🟢 Normal</button>
-            <button type="button" class="urgency-btn" onclick="setUrgency('medium', this)">🟡 Medium</button>
-            <button type="button" class="urgency-btn urgent" onclick="setUrgency('high', this)">🔴 Urgent!</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Message</label>
-          <textarea id="ct-message" placeholder="Describe your issue or request in detail..."></textarea>
-        </div>
-        <button type="button" class="btn" onclick="submitContact()">Send Message 📨</button>
-        <div class="success-msg" id="contact-success">Your message was sent! The team will respond as soon as possible ✅</div>
-      </form>
-    </div>
-  </div>
-
-</div>
-
-<script>
-// ===== CONFIG =====
-const APP_ID      = '68e60777e6063534b86e840a';
-const API_BASE    = `https://app.base44.com/api/apps/${APP_ID}/entities`;
-const FB_API      = `${API_BASE}/GuestFeedback`;
-const CONTENT_API = `${API_BASE}/LandingPageContent`;
-const GR_API      = `${API_BASE}/GuestRequest`;
-
-// ===== DEFAULTS (fallback if DB empty) =====
-const DEFAULTS = {
-  wifi: { ssid: 'HostelHub_Guest', pass: '1234' },
-  welcome: "We're happy to have you here. This page has everything you need for a comfortable stay.",
-  rules: "Quiet hours: 22:00 – 07:00\nPlease keep rooms and shared spaces clean\nNo smoking inside the building\nReturn keys by check-out time",
-  sched_notes: "Times may change — please check with staff for updates.",
-  contact_text: 'For any question or request — use the "Contact Staff" tab or visit reception.',
-  whatsapp: '972584400114',
-  meals: [
-    { name: 'Breakfast', days: 'Sun–Fri', time: '07:00 – 09:00' },
-    { name: 'Lunch',     days: 'Sun–Fri', time: '12:30 – 14:00' },
-    { name: 'Dinner',    days: 'Sun–Fri', time: '18:30 – 20:00' },
-    { name: 'Shabbat Breakfast', days: 'Saturday', time: '09:00 – 10:30' }
-  ],
-  events: [
-    { name: 'Shacharit',      days: 'Sun–Fri', time: '06:45' },
-    { name: 'Mincha/Maariv',  days: 'Daily',   time: 'Sunset' },
-    { name: 'Evening Lecture',days: 'Sun–Thu', time: '21:00 – 22:00' }
-  ],
-  fb_questions: [
-    { id: 'cleanliness', label: 'Cleanliness' },
-    { id: 'food',        label: 'Food' },
-    { id: 'staff',       label: 'Staff Communication' },
-    { id: 'overall',     label: 'Overall Rating' }
-  ]
-};
-
-let CONTENT = {}; // loaded from DB
-let whatsappNum = DEFAULTS.whatsapp;
-
-// ===== LOAD FROM DB =====
-async function loadFromDB() {
-  try {
-    const res = await fetch(CONTENT_API);
-    const json = await res.json();
-    const records = json.data || json || [];
-
-    records.forEach(r => {
-      const t = r.section_type || r.data?.section_type;
-      const c = r.content ?? r.data?.content ?? '';
-      const oi = r.order_index ?? r.data?.order_index ?? 0;
-      if (!t) return;
-      if (!CONTENT[t]) CONTENT[t] = [];
-      CONTENT[t].push({ content: c, order_index: oi });
+function setupCheckoutInput() {
+  const inp = document.getElementById("checkoutInput");
+  if (inp) {
+    inp.addEventListener("change", e => {
+      checkoutDate = e.target.value;
+      localStorage.setItem("guest_checkout", checkoutDate);
+      renderTab("home");
     });
-
-    // Sort schedule rows
-    if (CONTENT.meal)  CONTENT.meal.sort((a,b)  => a.order_index - b.order_index);
-    if (CONTENT.event) CONTENT.event.sort((a,b) => a.order_index - b.order_index);
-
-    applyContent();
-  } catch(e) {
-    console.warn('DB load failed, using defaults', e);
-    applyDefaults();
   }
 }
 
-function getVal(type) {
-  return CONTENT[type]?.[0]?.content ?? null;
+function clearCheckout() {
+  checkoutDate = "";
+  localStorage.removeItem("guest_checkout");
+  renderTab("home");
 }
 
-function applyContent() {
-  // WiFi
-  const wifiRaw = getVal('wifi');
-  const wifi = wifiRaw ? JSON.parse(wifiRaw) : DEFAULTS.wifi;
-  document.getElementById('wifi-ssid').textContent     = wifi.ssid || DEFAULTS.wifi.ssid;
-  document.getElementById('wifi-password').textContent = wifi.pass || DEFAULTS.wifi.pass;
-
-  // Welcome
-  document.getElementById('welcome-text').textContent = getVal('welcome') || DEFAULTS.welcome;
-
-  // Rules
-  const rules = (getVal('rules') || DEFAULTS.rules).split('\n').filter(r => r.trim());
-  document.getElementById('rules-list').innerHTML = rules.map(r => `<li>${r}</li>`).join('');
-
-  // Contact text
-  document.getElementById('contact-text').textContent = getVal('contact_text') || DEFAULTS.contact_text;
-
-  // Schedule notes
-  document.getElementById('schedule-notes').textContent = getVal('sched_notes') || DEFAULTS.sched_notes;
-
-  // WhatsApp
-  whatsappNum = getVal('whatsapp') || DEFAULTS.whatsapp;
-
-  // Meals
-  const meals = CONTENT.meal?.length
-    ? CONTENT.meal.map(r => JSON.parse(r.content))
-    : DEFAULTS.meals;
-  document.getElementById('meals-table-view').innerHTML = meals.map(m =>
-    `<tr><td>${m.name}</td><td>${m.days}</td><td>${m.time}</td></tr>`).join('');
-
-  // Events
-  const events = CONTENT.event?.length
-    ? CONTENT.event.map(r => JSON.parse(r.content))
-    : DEFAULTS.events;
-  document.getElementById('events-table-view').innerHTML = events.map(e =>
-    `<tr><td>${e.name}</td><td>${e.days}</td><td>${e.time}</td></tr>`).join('');
-
-  // Feedback questions
-  const fbQRaw = getVal('fb_questions');
-  const fbQ = fbQRaw ? JSON.parse(fbQRaw) : DEFAULTS.fb_questions;
-  renderFeedbackQuestions(fbQ);
+function startCountdown() {
+  if (!checkoutDate) return;
+  function calc() {
+    const el = document.getElementById("countdownDisplay");
+    if (!el) return;
+    const co = new Date(checkoutDate + "T11:00:00");
+    const diff = co - new Date();
+    if (diff <= 0) { el.textContent = "ג° ׳”׳’׳™׳¢ ׳”׳–׳׳!"; return; }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    el.textContent = h > 48 ? Math.floor(h/24) + " ׳™׳׳™׳" : h + "׳©׳³ " + m + "׳“׳³";
+  }
+  calc();
+  setInterval(calc, 60000);
 }
 
-function applyDefaults() {
-  document.getElementById('wifi-ssid').textContent     = DEFAULTS.wifi.ssid;
-  document.getElementById('wifi-password').textContent = DEFAULTS.wifi.pass;
-  document.getElementById('welcome-text').textContent  = DEFAULTS.welcome;
-  const rules = DEFAULTS.rules.split('\n').filter(r => r.trim());
-  document.getElementById('rules-list').innerHTML = rules.map(r => `<li>${r}</li>`).join('');
-  document.getElementById('contact-text').textContent  = DEFAULTS.contact_text;
-  document.getElementById('schedule-notes').textContent= DEFAULTS.sched_notes;
-  whatsappNum = DEFAULTS.whatsapp;
-  document.getElementById('meals-table-view').innerHTML = DEFAULTS.meals.map(m =>
-    `<tr><td>${m.name}</td><td>${m.days}</td><td>${m.time}</td></tr>`).join('');
-  document.getElementById('events-table-view').innerHTML = DEFAULTS.events.map(e =>
-    `<tr><td>${e.name}</td><td>${e.days}</td><td>${e.time}</td></tr>`).join('');
-  renderFeedbackQuestions(DEFAULTS.fb_questions);
-}
-
-// ===== ROOM LIST =====
-const ROOMS = [];
-for (let i = 11; i <= 31; i++) ROOMS.push('A-' + i);
-for (let i = 11; i <= 28; i++) ROOMS.push('B-' + i);
-
-function populateRoomSelects() {
-  ['fb-room', 'ct-room'].forEach(id => {
-    const sel = document.getElementById(id);
-    ROOMS.forEach(r => {
-      const opt = document.createElement('option');
-      opt.value = r; opt.textContent = r;
-      sel.appendChild(opt);
-    });
+function copyWifi(pass) {
+  navigator.clipboard?.writeText(pass).then(() => {
+    const btn = event.target;
+    btn.textContent = "ג“ ׳”׳•׳¢׳×׳§";
+    setTimeout(() => btn.textContent = "׳”׳¢׳×׳§", 2000);
   });
 }
 
-// ===== TABS =====
-function showTab(name, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  if (btn) btn.classList.add('active');
+// ג”€ג”€ג”€ SCHEDULE ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+function renderSchedule() {
+  const meals = Object.values(appData.content).filter(r=>r.section_type==="meal").sort((a,b)=>a.order_index-b.order_index).map(r=>{try{return JSON.parse(r.content);}catch{return null;}}).filter(Boolean);
+  const events = Object.values(appData.content).filter(r=>r.section_type==="event").sort((a,b)=>a.order_index-b.order_index).map(r=>{try{return JSON.parse(r.content);}catch{return null;}}).filter(Boolean);
+  const schedNotes = getContent("sched_notes","");
+
+  if (meals.length === 0 && events.length === 0) {
+    return `<div class="text-center text-gray-400 py-16">׳׳ ׳”׳•׳’׳“׳¨׳• ׳׳•׳—׳•׳× ׳–׳׳ ׳™׳ ׳¢׳“׳™׳™׳</div>`;
+  }
+
+  return `
+    ${meals.length > 0 ? `
+      <div class="bg-white rounded-2xl border p-5 mb-4">
+        <h3 class="font-bold text-gray-800 mb-3">נ½ן¸ ׳׳•׳— ׳׳¨׳•׳—׳•׳×</h3>
+        <div class="divide-y">
+          ${meals.map(m => `
+            <div class="flex justify-between items-center py-3">
+              <span class="font-semibold text-gray-700 text-sm">${esc(m.name||"")}</span>
+              <div class="text-left text-xs text-gray-500">
+                ${m.days ? `<span class="block">${esc(m.days)}</span>` : ""}
+                ${m.time ? `<span class="font-bold text-gray-700">${esc(m.time)}</span>` : ""}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    ` : ""}
+
+    ${events.length > 0 ? `
+      <div class="bg-white rounded-2xl border p-5 mb-4">
+        <h3 class="font-bold text-gray-800 mb-3">נ• ׳×׳₪׳™׳׳•׳× ׳•׳׳™׳¨׳•׳¢׳™׳</h3>
+        <div class="divide-y">
+          ${events.map(e => `
+            <div class="flex justify-between items-center py-3">
+              <span class="font-semibold text-gray-700 text-sm">${esc(e.name||"")}</span>
+              <div class="text-left text-xs text-gray-500">
+                ${e.days ? `<span class="block">${esc(e.days)}</span>` : ""}
+                ${e.time ? `<span class="font-bold text-gray-700">${esc(e.time)}</span>` : ""}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    ` : ""}
+
+    ${schedNotes ? `<div class="bg-yellow-50 rounded-2xl border border-yellow-100 p-4"><p class="text-sm text-yellow-700">ג„¹ן¸ ${esc(schedNotes)}</p></div>` : ""}
+  `;
 }
 
-// ===== DYNAMIC FEEDBACK QUESTIONS =====
-function renderFeedbackQuestions(questions) {
-  const container = document.getElementById('fb-questions-container');
-  container.innerHTML = '';
-  questions.forEach(q => {
-    const uid = q.id.replace(/[^a-z0-9]/gi, '_');
-    const div = document.createElement('div');
-    div.className = 'form-group';
-    div.innerHTML = `
-      <label>${q.label}</label>
-      <div class="stars">
-        <input type="radio" name="${uid}" id="${uid}5" value="5"><label for="${uid}5">★</label>
-        <input type="radio" name="${uid}" id="${uid}4" value="4"><label for="${uid}4">★</label>
-        <input type="radio" name="${uid}" id="${uid}3" value="3"><label for="${uid}3">★</label>
-        <input type="radio" name="${uid}" id="${uid}2" value="2"><label for="${uid}2">★</label>
-        <input type="radio" name="${uid}" id="${uid}1" value="1"><label for="${uid}1">★</label>
-      </div>`;
-    container.appendChild(div);
+// ג”€ג”€ג”€ EXPLORE ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+let exploreFilter = "all";
+function renderExplore() {
+  const icons = { restaurant:"נ½ן¸", attraction:"נ›ן¸", shop:"נ›’", transport:"נ", other:"נ“" };
+  const labels = { restaurant:"׳׳¡׳¢׳“׳•׳×", attraction:"׳׳˜׳¨׳§׳¦׳™׳•׳×", shop:"׳—׳ ׳•׳™׳•׳×", transport:"׳×׳—׳‘׳•׳¨׳”", other:"׳׳—׳¨" };
+  const visible = appData.attractions.filter(i => i.is_visible !== false);
+  const cats = ["all", ...new Set(visible.map(i=>i.category))];
+  const filtered = exploreFilter === "all" ? visible : visible.filter(i=>i.category===exploreFilter);
+
+  return `
+    <div class="bg-white rounded-2xl border p-5">
+      <h3 class="font-bold text-gray-800 mb-3">נ—÷ן¸ ׳׳” ׳׳¢׳©׳•׳× ׳‘׳׳–׳•׳¨</h3>
+      <div class="flex gap-2 mb-4 flex-wrap">
+        ${cats.map(c => `
+          <button onclick="setExploreFilter('${c}')" class="px-3 py-1 rounded-full text-xs font-semibold ${exploreFilter===c ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}">
+            ${c==="all" ? "׳”׳›׳" : (icons[c]||"")+" "+(labels[c]||c)}
+          </button>
+        `).join("")}
+      </div>
+      ${visible.length === 0 ? `<p class="text-gray-400 text-sm text-center py-8">׳”׳׳׳¦׳•׳× ׳™׳×׳•׳•׳¡׳₪׳• ׳‘׳§׳¨׳•׳‘</p>` : `
+        <div class="space-y-2">
+          ${filtered.map(item => `
+            <div class="rounded-xl border p-3 flex items-start gap-3">
+              <span class="text-2xl">${icons[item.category]||"נ“"}</span>
+              <div>
+                <p class="font-bold text-sm text-gray-800">${esc(item.name)}</p>
+                ${item.description ? `<p class="text-xs text-gray-500 mt-0.5">${esc(item.description)}</p>` : ""}
+                <div class="flex gap-2 mt-1 text-xs text-gray-400">
+                  ${item.distance ? `<span>נ“ ${esc(item.distance)}</span>` : ""}
+                  ${item.address ? `<span>ג€¢ ${esc(item.address)}</span>` : ""}
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `}
+    </div>
+  `;
+}
+
+function setExploreFilter(f) {
+  exploreFilter = f;
+  renderTab("explore");
+}
+
+// ג”€ג”€ג”€ CHECKIN ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+function renderCheckin() {
+  return `
+    <div class="bg-white rounded-2xl border p-5">
+      <h3 class="font-bold text-gray-800 mb-1">ג… ׳¦'׳§-׳׳™׳ ׳“׳™׳’׳™׳˜׳׳™</h3>
+      <p class="text-xs text-gray-400 mb-4">׳׳׳ ׳₪׳¨׳˜׳™׳ ׳׳₪׳ ׳™ ׳”׳”׳’׳¢׳” ׳•׳—׳¡׳•׳ ׳–׳׳ ׳‘׳§׳‘׳׳”</p>
+      <div id="checkinFormWrap">
+        <div class="space-y-3">
+          <input id="ci_name" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="׳©׳ ׳׳׳ *" />
+          <div class="grid grid-cols-2 gap-2">
+            <input id="ci_phone" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="׳˜׳׳₪׳•׳" />
+            <input id="ci_email" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="׳׳™׳׳™׳™׳" type="email" />
+          </div>
+          <input id="ci_id" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="׳׳¡׳₪׳¨ ׳×.׳–." />
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="text-xs text-gray-500 mb-1 block">׳›׳ ׳™׳¡׳” *</label><input type="date" id="ci_checkin" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" /></div>
+            <div><label class="text-xs text-gray-500 mb-1 block">׳™׳¦׳™׳׳”</label><input type="date" id="ci_checkout" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" /></div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="text-xs text-gray-500 mb-1 block">׳©׳¢׳× ׳”׳’׳¢׳”</label><input type="time" id="ci_arrival" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" /></div>
+            <div><label class="text-xs text-gray-500 mb-1 block">׳׳¡׳³ ׳׳•׳¨׳—׳™׳</label><input type="number" min="1" id="ci_guests" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" value="1" /></div>
+          </div>
+          <textarea id="ci_requests" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-y" rows="2" placeholder="׳‘׳§׳©׳•׳× ׳׳™׳•׳—׳“׳•׳×..."></textarea>
+          <button onclick="submitCheckin()" class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700">
+            ׳©׳׳— ׳₪׳¨׳˜׳™ ׳”׳’׳¢׳” ג†’
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setupCheckin() {}
+
+async function submitCheckin() {
+  const name = document.getElementById("ci_name")?.value?.trim();
+  const checkin = document.getElementById("ci_checkin")?.value;
+  if (!name || !checkin) { alert("׳ ׳ ׳׳׳׳ ׳©׳ ׳•׳×׳׳¨׳™׳ ׳›׳ ׳™׳¡׳”"); return; }
+  const btn = document.querySelector("#checkinFormWrap button");
+  btn.textContent = "׳©׳•׳׳—..."; btn.disabled = true;
+  const ok = await apiPost("DigitalCheckin", {
+    full_name: name,
+    phone: document.getElementById("ci_phone")?.value || "",
+    email: document.getElementById("ci_email")?.value || "",
+    id_number: document.getElementById("ci_id")?.value || "",
+    checkin_date: checkin,
+    checkout_date: document.getElementById("ci_checkout")?.value || "",
+    estimated_arrival: document.getElementById("ci_arrival")?.value || "",
+    num_guests: parseInt(document.getElementById("ci_guests")?.value) || 1,
+    special_requests: document.getElementById("ci_requests")?.value || "",
+    status: "pending"
+  });
+  document.getElementById("checkinFormWrap").innerHTML = ok
+    ? `<div class="text-center py-8"><div class="text-5xl mb-3">ג…</div><p class="font-bold text-green-700">׳ ׳©׳׳— ׳‘׳”׳¦׳׳—׳”!</p><p class="text-sm text-gray-500 mt-1">׳”׳¦׳•׳•׳× ׳™׳׳©׳¨ ׳׳× ׳₪׳¨׳˜׳™׳ ׳‘׳§׳¨׳•׳‘</p></div>`
+    : `<div class="text-center py-8 text-red-500">׳©׳’׳™׳׳” ׳‘׳©׳׳™׳—׳”, ׳ ׳¡׳” ׳©׳•׳‘</div>`;
+}
+
+// ג”€ג”€ג”€ CONTACT ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+function renderContact() {
+  const waNum = getContent("whatsapp","972584400114").replace(/\D/g,"");
+  const contactText = getContent("contact_text","׳׳›׳ ׳©׳׳׳” ג€” ׳₪׳ ׳• ׳׳¦׳•׳•׳× ׳“׳¨׳ WhatsApp");
+  return `
+    <div class="bg-white rounded-2xl border p-5">
+      <h3 class="font-bold text-gray-800 mb-3">נ“ ׳¦׳•׳¨ ׳§׳©׳¨ ׳¢׳ ׳”׳¦׳•׳•׳×</h3>
+      <p class="text-sm text-gray-600 mb-4">${esc(contactText)}</p>
+      <a href="https://wa.me/${waNum}" target="_blank"
+        class="flex items-center justify-center gap-2 w-full py-3 bg-green-500 text-white rounded-xl font-bold text-sm hover:bg-green-600">
+        <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  `;
+}
+
+// ג”€ג”€ג”€ FEEDBACK ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+const fbQuestions = [
+  { id:"cleanliness_rating", label:"׳ ׳™׳§׳™׳•׳" },
+  { id:"food_rating", label:"׳׳•׳›׳" },
+  { id:"communication_rating", label:"׳×׳§׳©׳•׳¨׳× ׳¢׳ ׳”׳¦׳•׳•׳×" },
+  { id:"overall_rating", label:"׳“׳™׳¨׳•׳’ ׳›׳׳׳™" },
+];
+
+function renderFeedback() {
+  return `
+    <div class="bg-white rounded-2xl border p-5">
+      <h3 class="font-bold text-gray-800 mb-1">ג­ ׳©׳×׳£ ׳׳•׳×׳ ׳•</h3>
+      <p class="text-xs text-gray-400 mb-4">׳”׳₪׳™׳“׳‘׳§ ׳©׳׳ ׳¢׳•׳–׳¨ ׳׳ ׳• ׳׳”׳©׳×׳₪׳¨</p>
+      <div id="feedbackFormWrap">
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-2">
+            <input id="fb_name" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="׳©׳׳ (׳׳•׳₪׳¦׳™׳•׳ ׳׳™)" />
+            <input id="fb_room" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="׳׳¡׳₪׳¨ ׳—׳“׳¨" />
+          </div>
+          ${fbQuestions.map(q => `
+            <div>
+              <p class="text-sm font-semibold text-gray-700 mb-2">${esc(q.label)}</p>
+              <div class="flex gap-2">
+                ${[1,2,3,4,5].map(n => `
+                  <button onclick="setRating('${q.id}',${n})" id="star_${q.id}_${n}"
+                    class="star-btn star-inactive">${n}</button>
+                `).join("")}
+              </div>
+            </div>
+          `).join("")}
+          <textarea id="fb_comments" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-y" rows="3" placeholder="׳”׳¢׳¨׳•׳× ׳ ׳•׳¡׳₪׳•׳×..."></textarea>
+          <button onclick="submitFeedback()" class="w-full py-3 bg-yellow-500 text-white rounded-xl font-bold text-sm hover:bg-yellow-600">
+            ׳©׳׳— ׳₪׳™׳“׳‘׳§ ג­
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setupFeedback() { feedbackRatings = {}; }
+
+function setRating(qid, val) {
+  feedbackRatings[qid] = val;
+  [1,2,3,4,5].forEach(n => {
+    const btn = document.getElementById(`star_${qid}_${n}`);
+    if (btn) btn.className = `star-btn ${n===val ? 'star-active' : 'star-inactive'}`;
   });
 }
 
-// ===== URGENCY =====
-let selectedUrgency = 'low';
-function setUrgency(level, btn) {
-  selectedUrgency = level;
-  document.querySelectorAll('.urgency-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-
-// ===== FEEDBACK SUBMIT → DB =====
 async function submitFeedback() {
-  const name = document.getElementById('fb-name').value.trim();
-  const room = document.getElementById('fb-room').value;
-  if (!name || !room) { alert('Please fill in your name and room number'); return; }
-
-  const fbQRaw = getVal('fb_questions');
-  const questions = fbQRaw ? JSON.parse(fbQRaw) : DEFAULTS.fb_questions;
-  const ratings = {};
-  questions.forEach(q => {
-    const uid = q.id.replace(/[^a-z0-9]/gi, '_');
-    const checked = document.querySelector(`input[name="${uid}"]:checked`);
-    ratings[q.label] = checked ? parseInt(checked.value) : null;
-  });
-
-  const comments = document.getElementById('fb-comments').value.trim();
+  const allRated = fbQuestions.every(q => feedbackRatings[q.id]);
+  if (!allRated) { alert("׳׳ ׳ ׳“׳¨׳’ ׳׳× ׳›׳ ׳”׳§׳˜׳’׳•׳¨׳™׳•׳×"); return; }
+  const btn = document.querySelector("#feedbackFormWrap button");
+  btn.textContent = "׳©׳•׳׳—..."; btn.disabled = true;
   const payload = {
-    guest_name:           name,
-    room_number:          room,
-    comments:             comments,
-    overall_rating:       ratings['Overall Rating'] ?? null,
-    cleanliness_rating:   ratings['Cleanliness'] ?? null,
-    food_rating:          ratings['Food'] ?? null,
-    communication_rating: ratings['Staff Communication'] ?? null,
-    custom_ratings:       JSON.stringify(ratings)
+    guest_name: document.getElementById("fb_name")?.value || "",
+    room_number: document.getElementById("fb_room")?.value || "",
+    comments: document.getElementById("fb_comments")?.value || "",
   };
-
-  try {
-    await fetch(FB_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-  } catch(e) { console.warn(e); }
-
-  document.getElementById('feedback-success').classList.add('show');
-  document.getElementById('feedback-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
+  fbQuestions.forEach(q => { payload[q.id] = feedbackRatings[q.id]; });
+  const ok = await apiPost("GuestFeedback", payload);
+  document.getElementById("feedbackFormWrap").innerHTML = ok
+    ? `<div class="text-center py-8"><div class="text-5xl mb-3">ג­</div><p class="font-bold text-yellow-700">׳×׳•׳“׳” ׳¢׳ ׳”׳₪׳™׳“׳‘׳§!</p><p class="text-sm text-gray-500 mt-1">׳—׳•׳•׳× ׳“׳¢׳×׳ ׳—׳©׳•׳‘׳” ׳׳ ׳•</p></div>`
+    : `<div class="text-center py-8 text-red-500">׳©׳’׳™׳׳” ׳‘׳©׳׳™׳—׳”, ׳ ׳¡׳” ׳©׳•׳‘</div>`;
 }
 
-// ===== CONTACT / WHATSAPP =====
-function submitContact() {
-  const name = document.getElementById('ct-name').value.trim();
-  const room = document.getElementById('ct-room').value;
-  const type = document.getElementById('ct-type').value;
-  const msg  = document.getElementById('ct-message').value.trim();
-  if (!name || !room || !type || !msg) { alert('Please fill in all fields'); return; }
-
-  const urgencyLabel = { low: '🟢 Normal', medium: '🟡 Medium', high: '🔴 URGENT' }[selectedUrgency];
-  const typeLabel = document.getElementById('ct-type').options[document.getElementById('ct-type').selectedIndex].text;
-  const text = `🏠 *HostelHub Guest Request*\n\n👤 *Guest:* ${name}\n🚪 *Room:* ${room}\n📋 *Type:* ${typeLabel}\n⚡ *Urgency:* ${urgencyLabel}\n\n💬 *Message:*\n${msg}`;
-
-  window.open(`https://wa.me/${whatsappNum}?text=${encodeURIComponent(text)}`, '_blank');
-  document.getElementById('contact-success').classList.add('show');
-  document.getElementById('contact-form').querySelectorAll('input,textarea,button,select').forEach(el => el.disabled = true);
+// ג”€ג”€ג”€ Utils ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
+function esc(s) {
+  if (!s) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
-
-// ===== INIT =====
-populateRoomSelects();
-loadFromDB();
 </script>
 </body>
 </html>
