@@ -1,585 +1,539 @@
-
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Welcome to Equip Center</title>
-<meta name="theme-color" content="#E8A855">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F4F0;color:#1a1a1a;overflow-x:hidden}
-:root{--warm:#E8A855;--warm-light:#FFF3E0;--warm-dark:#C47D20;--warm-text:#7A4D0A;--surface:#fff;--border:#e5e3dc;--text:#1a1a1a;--text2:#666;--text3:#999}
-
-/* HERO */
-.hero{background:linear-gradient(135deg,var(--warm) 0%,var(--warm-dark) 100%);color:#fff;padding:env(safe-area-inset-top) 20px 24px 20px;text-align:center;position:relative;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.hero-icon{font-size:48px;margin-bottom:8px;display:block}
-.hero-title{font-size:28px;font-weight:700;margin-bottom:4px;letter-spacing:.5px}
-.hero-sub{font-size:14px;opacity:.9}
-
-/* ADMIN BUTTON */
-.admin-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s}
-.admin-btn:hover{background:rgba(255,255,255,.3)}
-
-/* MAIN CONTAINER */
-.container{max-width:600px;margin:0 auto;padding:20px 16px 40px}
-
-/* BLOCKS */
-.block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;overflow:hidden}
-.block-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-.block-icon{font-size:24px;flex-shrink:0}
-.block-title{font-size:14px;font-weight:600;color:var(--text)}
-.block-body{font-size:13px;line-height:1.7;color:var(--text2)}
-
-/* WIFI DISPLAY */
-.wifi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 0}
-.wifi-field{background:linear-gradient(135deg,#E6F1FB 0%,#D6E7F8 100%);border-radius:8px;padding:12px;cursor:pointer;transition:all .2s;border:1px solid #B5D4F4}
-.wifi-field:active{transform:scale(.98);background:#C8DFF5}
-.wifi-label{font-size:10px;color:#185FA5;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
-.wifi-value{font-size:15px;font-weight:700;color:#0C447C;user-select:all;word-break:break-all;line-height:1.3}
-.wifi-hint{font-size:10px;color:#378ADD;margin-top:4px}
-.copied-msg{font-size:10px;color:#27500A;display:none;margin-top:4px;font-weight:600}
-
-/* RULES LIST */
-.rules-list{list-style:none;padding:0}
-.rules-list li{padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
-.rules-list li:last-child{border-bottom:none}
-.rule-num{background:var(--warm-light);color:var(--warm-dark);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;font-size:13px}
-.rule-text{font-size:13px;color:var(--text);padding-top:2px}
-
-/* CONTACTS */
-.contact-list{list-style:none;padding:0}
-.contact-item{padding:12px;background:#FAFAF8;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.contact-item:last-child{margin-bottom:0}
-.contact-name{font-size:13px;font-weight:600;color:var(--text)}
-.contact-phone{font-size:13px;color:var(--warm-dark);font-weight:500;text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:6px}
-.contact-phone:active{opacity:.7}
-.whatsapp-icon{font-size:14px}
-
-/* WEATHER */
-.weather-card{background:linear-gradient(135deg,#E6F1FB 0%,#D6E7F8 100%);padding:12px;border-radius:8px;display:flex;gap:12px;align-items:center;text-align:center}
-.weather-icon{font-size:32px}
-.weather-info{flex:1;text-align:left}
-.weather-temp{font-size:20px;font-weight:700;color:#0C447C}
-.weather-desc{font-size:12px;color:#185FA5;margin-top:2px}
-.weather-detail{font-size:11px;color:#378ADD;margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
-
-/* MODALS */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-end;justify-content:center;z-index:100}
-.modal-overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:12px 12px 0 0;padding:24px 20px;width:100%;max-height:90vh;overflow-y:auto;max-width:600px}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.modal-title{font-size:17px;font-weight:600}
-.modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--text2)}
-
-/* FORMS */
-.form-group{margin-bottom:14px;display:flex;flex-direction:column;gap:5px}
-.form-label{font-size:12px;color:var(--text2);font-weight:600}
-input,select,textarea{padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;width:100%;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--warm)}
-textarea{min-height:70px;resize:vertical}
-
-/* BUTTONS */
-.btn{padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;font-size:13px;font-family:inherit;font-weight:500;transition:all .15s}
-.btn:active{opacity:.8}
-.btn-primary{background:var(--warm);color:var(--warm-text);border-color:var(--warm)}
-.btn-primary:active{background:var(--warm-dark)}
-.btn-sm{padding:8px 12px;font-size:12px}
-.btn-block{width:100%;margin-bottom:8px}
-
-/* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;display:none;z-index:200;box-shadow:0 4px 12px rgba(0,0,0,.15)}
-.toast.show{display:block;animation:slideIn .3s}
-.toast.success{border-color:#C0DD97;background:#EAF3DE;color:#27500A}
-.toast.error{border-color:#F7C1C1;background:#FCEBEB;color:#791F1F}
-@keyframes slideIn{from{transform:translateX(-400px);opacity:0}to{transform:translateX(0);opacity:1}}
-
-/* RESPONSIVE */
-@media(max-width:480px){
-  .hero{padding:env(safe-area-inset-top) 16px 18px}
-  .hero-title{font-size:24px}
-  .container{padding:16px 12px 32px}
-  .wifi-row{grid-template-columns:1fr}
-  .modal{border-radius:16px 16px 0 0;padding:20px 16px}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>OHC Rooms &#8212; &#1508;&#1493;&#1512;&#1496;&#1500; &#1488;&#1493;&#1512;&#1495;&#1497;&#1501;</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f3f4f6; }
+    .tab-active { color: #2563eb; }
+    .tab-inactive { color: #9ca3af; }
+    .star-btn { width:40px;height:40px;border-radius:50%;font-weight:700;font-size:14px;transition:all .15s; }
+    .star-active { background:#facc15;color:#fff;transform:scale(1.1); }
+    .star-inactive { background:#f3f4f6;color:#6b7280; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .animate-pulse { animation: pulse 1.5s infinite; }
+  </style>
 </head>
-<body>
+<body class="min-h-screen bg-gray-100">
 
-<div class="hero">
-  <span class="hero-icon" id="hero-icon">🏢</span>
-  <div class="hero-title" id="hero-title">Equip Center</div>
-  <div class="hero-sub" id="hero-sub">Welcome to our facility!</div>
-  <button class="admin-btn" onclick="openModal('modal-admin')">⚙ Admin</button>
-</div>
-
-<div class="container">
-
-  <!-- WIFI -->
-  <div class="block" id="wifi-block" style="display:none">
-    <div class="block-header">
-      <span class="block-icon">📶</span>
-      <span class="block-title">WiFi Network</span>
+<!-- Header -->
+<header class="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-4 py-4 shadow-md sticky top-0 z-40">
+  <div class="max-w-lg mx-auto flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold">OHC Rooms</h1>
+      <p class="text-blue-200 text-xs" id="todayDate"></p>
     </div>
-    <div class="wifi-row">
-      <div class="wifi-field" onclick="copyToClipboard(this)">
-        <div class="wifi-label">Network Name</div>
-        <div class="wifi-value" id="wifi-ssid">—</div>
-        <div class="wifi-hint">Click to copy</div>
-        <div class="copied-msg">✓ Copied</div>
-      </div>
-      <div class="wifi-field" onclick="copyToClipboard(this)">
-        <div class="wifi-label">Password</div>
-        <div class="wifi-value" id="wifi-password">—</div>
-        <div class="wifi-hint">Click to copy</div>
-        <div class="copied-msg">✓ Copied</div>
-      </div>
+    <div id="weatherWidget" class="text-right hidden">
+      <p class="text-2xl font-bold" id="wTemp"></p>
+      <p class="text-blue-200 text-xs" id="wDesc"></p>
     </div>
   </div>
+</header>
 
-  <!-- WEATHER -->
-  <div class="block" id="weather-block" style="display:none">
-    <div class="block-header">
-      <span class="block-icon">☀️</span>
-      <span class="block-title">Weather in Haifa</span>
-    </div>
-    <div class="weather-card" id="weather-card">
-      <div class="weather-icon">—</div>
-      <div class="weather-info">
-        <div class="weather-temp" id="weather-temp">—</div>
-        <div class="weather-desc" id="weather-desc">Loading...</div>
-        <div class="weather-detail" id="weather-detail"></div>
-      </div>
-    </div>
-  </div>
+<!-- Main -->
+<main class="max-w-lg mx-auto px-4 py-5 pb-28" id="mainContent">
+  <div class="text-center py-16 text-gray-400 animate-pulse">&#1496;&#1493;&#1506;&#1503;...</div>
+</main>
 
-  <!-- RULES -->
-  <div class="block" id="rules-block" style="display:none">
-    <div class="block-header">
-      <span class="block-icon">📋</span>
-      <span class="block-title">House Rules</span>
-    </div>
-    <ul class="rules-list" id="rules-list"></ul>
-  </div>
-
-  <!-- CONTACTS -->
-  <div class="block" id="contacts-block" style="display:none">
-    <div class="block-header">
-      <span class="block-icon">☎️</span>
-      <span class="block-title">Contact Us</span>
-    </div>
-    <ul class="contact-list" id="contacts-list"></ul>
-  </div>
-
-  <!-- INFO -->
-  <div class="block" id="info-block" style="display:none">
-    <div class="block-header">
-      <span class="block-icon">ℹ️</span>
-      <span class="block-title">Additional Information</span>
-    </div>
-    <div class="block-body" id="info-text"></div>
-  </div>
-
-</div>
-
-<!-- ===== MODAL: Admin ===== -->
-<div class="modal-overlay" id="modal-admin">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">📋 Manage Information</div>
-      <button class="modal-close" onclick="closeModal('modal-admin')">×</button>
-    </div>
-
-    <!-- TABS -->
-    <div style="display:flex;gap:8px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:12px;overflow-x:auto">
-      <button class="btn btn-sm" style="border-bottom:2px solid var(--warm);border-radius:0;background:transparent;color:var(--warm);font-weight:600;white-space:nowrap" onclick="switchAdminTab('general',this)">General</button>
-      <button class="btn btn-sm" style="border-radius:0;background:transparent;white-space:nowrap" onclick="switchAdminTab('wifi',this)">WiFi</button>
-      <button class="btn btn-sm" style="border-radius:0;background:transparent;white-space:nowrap" onclick="switchAdminTab('rules',this)">Rules</button>
-      <button class="btn btn-sm" style="border-radius:0;background:transparent;white-space:nowrap" onclick="switchAdminTab('contacts',this)">Contacts</button>
-      <button class="btn btn-sm" style="border-radius:0;background:transparent;white-space:nowrap" onclick="switchAdminTab('info',this)">Info</button>
-    </div>
-
-    <!-- GENERAL SETTINGS -->
-    <div id="tab-general" style="display:block">
-      <div class="form-group">
-        <label class="form-label">Facility Name (Main Title)</label>
-        <input type="text" id="admin-title" placeholder="Equip Center">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Welcome Message (Subtitle)</label>
-        <input type="text" id="admin-subtitle" placeholder="Welcome to our facility!">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Icon (Emoji)</label>
-        <input type="text" id="admin-icon" placeholder="🏢" maxlength="2">
-      </div>
-      <button class="btn btn-primary btn-block" onclick="saveGeneral()">💾 Save Settings</button>
-    </div>
-
-    <!-- WIFI SETTINGS -->
-    <div id="tab-wifi" style="display:block">
-      <div class="form-group">
-        <label class="form-label">WiFi Network Name (SSID)</label>
-        <input type="text" id="admin-wifi-ssid" placeholder="Network name">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="text" id="admin-wifi-password" placeholder="Password">
-      </div>
-      <button class="btn btn-primary btn-block" onclick="saveWiFi()">💾 Save WiFi</button>
-    </div>
-
-    <!-- RULES SETTINGS -->
-    <div id="tab-rules" style="display:none">
-      <div class="form-group">
-        <label class="form-label">Rule 1</label>
-        <input type="text" id="admin-rule-1" placeholder="Write a rule...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Rule 2</label>
-        <input type="text" id="admin-rule-2" placeholder="Write a rule...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Rule 3</label>
-        <input type="text" id="admin-rule-3" placeholder="Write a rule...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Rule 4</label>
-        <input type="text" id="admin-rule-4" placeholder="Write a rule...">
-      </div>
-      <button class="btn btn-primary btn-block" onclick="saveRules()">💾 Save Rules</button>
-    </div>
-
-    <!-- CONTACTS SETTINGS -->
-    <div id="tab-contacts" style="display:none">
-      <div style="margin-bottom:16px;padding:12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--warm)">
-        <div style="font-size:12px;color:var(--warm-dark)">
-          <strong>📱 Main WhatsApp Number</strong><br>
-          This is the primary contact for guests. Format: 05x-xxxxxxx or +972...
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">WhatsApp Number</label>
-        <input type="text" id="admin-contact-whatsapp" placeholder="05x-xxxxxxx or +972...">
-      </div>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-        <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
-          <strong>Additional Contacts (Optional)</strong>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contact 1 Name</label>
-          <input type="text" id="admin-contact-1-name" placeholder="Name">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contact 1 Phone</label>
-          <input type="text" id="admin-contact-1-phone" placeholder="Phone number">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contact 2 Name</label>
-          <input type="text" id="admin-contact-2-name" placeholder="Name">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contact 2 Phone</label>
-          <input type="text" id="admin-contact-2-phone" placeholder="Phone number">
-        </div>
-      </div>
-      <button class="btn btn-primary btn-block" onclick="saveContacts()" style="margin-top:16px">💾 Save Contacts</button>
-    </div>
-
-    <!-- INFO SETTINGS -->
-    <div id="tab-info" style="display:none">
-      <div class="form-group">
-        <label class="form-label">Additional Information</label>
-        <textarea id="admin-info" placeholder="Write useful information...&#10;Line breaks work fine!"></textarea>
-      </div>
-      <button class="btn btn-primary btn-block" onclick="saveInfo()">💾 Save Information</button>
-    </div>
-
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<!-- Bottom Nav -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2 z-50 shadow-lg">
+  <button onclick="showTab('home')" id="nav-home" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-active">
+    <span class="text-xl">&#127968;</span><span class="text-[10px] font-semibold">&#1489;&#1497;&#1514;</span>
+  </button>
+  <button onclick="showTab('schedule')" id="nav-schedule" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">&#128197;</span><span class="text-[10px] font-semibold">&#1500;&#1493;&#1495; &#1494;&#1502;&#1504;&#1497;&#1501;</span>
+  </button>
+  <button onclick="showTab('explore')" id="nav-explore" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">&#128506;&#65039;</span><span class="text-[10px] font-semibold">&#1500;&#1490;&#1500;&#1493;&#1514;</span>
+  </button>
+  <button onclick="showTab('checkin')" id="nav-checkin" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">&#9989;</span><span class="text-[10px] font-semibold">&#1510;'&#1511;-&#1488;&#1497;&#1503;</span>
+  </button>
+  <button onclick="showTab('contact')" id="nav-contact" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">&#128222;</span><span class="text-[10px] font-semibold">&#1510;&#1493;&#1512; &#1511;&#1513;&#1512;</span>
+  </button>
+  <button onclick="showTab('feedback')" id="nav-feedback" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive">
+    <span class="text-xl">&#11088;</span><span class="text-[10px] font-semibold">&#1508;&#1497;&#1491;&#1489;&#1511;</span>
+  </button>
+</nav>
 
 <script>
-// ===== CONFIG =====
-const STORAGE_KEY = 'equip_center_guest_page_data';
+// \u2500\u2500\u2500 Config \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+const BASE44_APP_ID = "68e60777e6063534b86e840a";
+const BASE44_API = "https://api.base44.com/api/apps/" + BASE44_APP_ID + "/entities";
 
-// ===== DEFAULT DATA =====
-const defaultData = {
-  title: 'Equip Center',
-  subtitle: 'Welcome to our facility!',
-  icon: '🏢',
-  wifi: { ssid: 'EquipCenter_WiFi', password: 'welcome123' },
-  rules: [
-    '🤫 Keep quiet between 22:00 and 08:00',
-    '👟 Remove shoes at the entrance',
-    '🧹 Keep your space clean',
-    '🔑 Check out by 11:00 AM'
-  ],
-  whatsapp: '972501234567',
-  contacts: [
-    { name: 'Maintenance', phone: '+972-50-123-4567' },
-    { name: 'Reception', phone: '+972-50-765-4321' }
-  ],
-  info: 'Breakfast: 7:00 AM - 10:00 AM\nLaundry Room: Floor 1\nKitchen: Open 24 hours'
-};
+// \u2500\u2500\u2500 State \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+let appData = { content:{}, messages:[], attractions:[], rota:[] };
+let currentTab = "home";
+let feedbackRatings = {};
+let checkoutDate = localStorage.getItem("guest_checkout") || "";
 
-// ===== UTILS =====
-function getData() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : defaultData;
-}
-function setData(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function toast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 3000);
-}
-function copyToClipboard(el) {
-  const value = el.querySelector('.wifi-value').textContent;
-  if (value === '—') return;
-  navigator.clipboard.writeText(value).then(() => {
-    el.querySelector('.copied-msg').style.display = 'block';
-    setTimeout(() => el.querySelector('.copied-msg').style.display = 'none', 2000);
-  });
+// \u2500\u2500\u2500 Init \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+document.addEventListener("DOMContentLoaded", async () => {
+  setTodayDate();
+  fetchWeather();
+  await loadAllData();
+  renderTab("home");
+});
+
+function setTodayDate() {
+  const d = new Date();
+  document.getElementById("todayDate").textContent = d.toLocaleDateString("he-IL", { weekday:"long", day:"numeric", month:"long" });
 }
 
-function normalizePhone(phone) {
-  if (!phone) return '';
-  let cleaned = phone.replace(/\D/g, '');
-  if (cleaned.startsWith('0')) cleaned = '972' + cleaned.substring(1);
-  if (!cleaned.startsWith('972')) cleaned = '972' + cleaned;
-  return cleaned;
-}
-
-// ===== RENDER =====
-function renderPage() {
-  const data = getData();
-  
-  // Update titles
-  document.getElementById('hero-icon').textContent = data.icon || '🏢';
-  document.getElementById('hero-title').textContent = data.title || 'Equip Center';
-  document.getElementById('hero-sub').textContent = data.subtitle || 'Welcome to our facility!';
-  
-  // WiFi
-  if (data.wifi.ssid) {
-    document.getElementById('wifi-block').style.display = 'block';
-    document.getElementById('wifi-ssid').textContent = data.wifi.ssid;
-    document.getElementById('wifi-password').textContent = data.wifi.password || '—';
-  }
-  
-  // Rules
-  if (data.rules.length) {
-    document.getElementById('rules-block').style.display = 'block';
-    const rulesList = document.getElementById('rules-list');
-    rulesList.innerHTML = data.rules.map((r, i) => `
-      <li>
-        <div class="rule-num">${i + 1}</div>
-        <div class="rule-text">${r}</div>
-      </li>
-    `).join('');
-  }
-  
-  // Contacts
-  const contactsList = document.getElementById('contacts-list');
-  let contactsHTML = '';
-  
-  if (data.whatsapp) {
-    const waPhone = normalizePhone(data.whatsapp);
-    contactsHTML += `
-      <li class="contact-item" style="background:linear-gradient(135deg,#E7F5E1 0%,#F0F9ED 100%);border:1px solid #C0DD97">
-        <span class="contact-name" style="color:#27500A">💬 WhatsApp</span>
-        <a class="contact-phone" href="https://wa.me/${waPhone}" style="color:#27500A">
-          <span class="whatsapp-icon">💬</span>
-          Send Message
-        </a>
-      </li>
-    `;
-  }
-  
-  if (data.contacts && data.contacts.length) {
-    contactsHTML += data.contacts.map(c => {
-      const tel = `tel:${c.phone.replace(/\D/g, '')}`;
-      return `
-        <li class="contact-item">
-          <span class="contact-name">${c.name}</span>
-          <a class="contact-phone" href="${tel}">${c.phone}</a>
-        </li>
-      `;
-    }).join('');
-  }
-  
-  if (contactsHTML) {
-    document.getElementById('contacts-block').style.display = 'block';
-    contactsList.innerHTML = contactsHTML;
-  }
-  
-  // Info
-  if (data.info) {
-    document.getElementById('info-block').style.display = 'block';
-    document.getElementById('info-text').innerHTML = data.info.split('\n').map(line => line.trim()).filter(l => l).join('<br>');
-  }
-  
-  // Load weather
-  loadWeather();
-}
-
-// ===== WEATHER =====
-async function loadWeather() {
+async function fetchWeather() {
   try {
-    const res = await fetch('https://wttr.in/Haifa?format=j1');
-    const data = await res.json();
-    const current = data.current_condition[0];
-    const day = data.weather[0];
-    
-    const temp = Math.round(current.temp_c);
-    const desc = current.weatherDesc[0].value;
-    const humidity = current.humidity;
-    const windSpeed = Math.round(current.windspeedKmph);
-    
-    const icons = {
-      'Clear': '☀️', 'Sunny': '☀️',
-      'Partly cloudy': '⛅', 'Cloudy': '☁️',
-      'Overcast': '☁️',
-      'Mist': '🌫️', 'Fog': '🌫️',
-      'Patchy rain': '🌧️', 'Light rain': '🌧️', 'Moderate rain': '🌧️',
-      'Heavy rain': '⛈️', 'Thundery': '⛈️'
-    };
-    let icon = '☀️';
-    for (const [key, val] of Object.entries(icons)) {
-      if (desc.includes(key)) { icon = val; break; }
-    }
-    
-    document.getElementById('weather-block').style.display = 'block';
-    document.querySelector('.weather-icon').textContent = icon;
-    document.getElementById('weather-temp').textContent = `${temp}°C`;
-    document.getElementById('weather-desc').textContent = desc;
-    document.getElementById('weather-detail').innerHTML = `
-      💧 Humidity: ${humidity}% | 💨 Wind: ${windSpeed} km/h
-    `;
-  } catch (e) {
-    console.error('Weather error:', e);
+    const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=32.853&longitude=35.142&current=temperature_2m,weathercode,windspeed_10m,relative_humidity_2m&timezone=Asia%2FJerusalem");
+    const data = await r.json();
+    const c = data.current;
+    const codes = {0:"\u2600\uFE0F \u05E9\u05DE\u05E9\u05D9",1:"\u1F324\uFE0F \u05D1\u05D4\u05D9\u05E8 \u05D1\u05E8\u05D5\u05D1",2:"\u26C5 \u05DE\u05E2\u05D5\u05E0\u05DF \u05D7\u05DC\u05E7\u05D9\u05EA",3:"\u2601\uFE0F \u05DE\u05E2\u05D5\u05E0\u05DF",45:"\u1F32B\uFE0F \u05E2\u05E8\u05E4\u05DC",48:"\u1F32B\uFE0F \u05E2\u05E8\u05E4\u05DC",51:"\u1F326\uFE0F \u05D2\u05E9\u05DD \u05E7\u05DC",53:"\u1F327\uFE0F \u05D2\u05E9\u05DD",55:"\u1F327\uFE0F \u05D2\u05E9\u05DD \u05DB\u05D1\u05D3",61:"\u1F326\uFE0F \u05D2\u05E9\u05DD \u05E7\u05DC",63:"\u1F327\uFE0F \u05D2\u05E9\u05DD",65:"\u1F327\uFE0F \u05D2\u05E9\u05DD \u05DB\u05D1\u05D3",80:"\u1F326\uFE0F \u05D2\u05E9\u05DD",95:"\u26C8\uFE0F \u05E1\u05D5\u05E4\u05EA \u05D1\u05E8\u05E7\u05D9\u05DD"};
+    const desc = codes[c.weathercode] || "\u1F321\uFE0F";
+    document.getElementById("wTemp").textContent = Math.round(c.temperature_2m) + "\u00B0C";
+    document.getElementById("wDesc").textContent = desc;
+    document.getElementById("weatherWidget").classList.remove("hidden");
+  } catch(e) {}
+}
+
+async function apiGet(entity, params="") {
+  try {
+    const r = await fetch(`${BASE44_API}/${entity}/?${params}`, {
+      headers: { "Content-Type": "application/json" }
+    });
+    if (!r.ok) return [];
+    return await r.json();
+  } catch { return []; }
+}
+
+async function apiPost(entity, data) {
+  const r = await fetch(`${BASE44_API}/${entity}/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return r.ok;
+}
+
+async function loadAllData() {
+  const [content, messages, attractions, rota] = await Promise.all([
+    apiGet("LandingPageContent", "order_by=order_index"),
+    apiGet("StaffMessage"),
+    apiGet("Attraction"),
+    apiGet("StaffRota"),
+  ]);
+  const map = {};
+  (content||[]).forEach(r => { map[r.section_type] = r; });
+  appData = { content: map, messages: messages||[], attractions: attractions||[], rota: rota||[] };
+}
+
+function getContent(key, fallback="") {
+  return appData.content[key]?.content || fallback;
+}
+
+function getJSON(key, fallback=null) {
+  try { return JSON.parse(getContent(key,"null")) || fallback; } catch { return fallback; }
+}
+
+// \u2500\u2500\u2500 Tab Routing \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll("nav button").forEach(b => {
+    b.className = b.id === "nav-"+tab
+      ? "flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-active"
+      : "flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl tab-inactive";
+  });
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  const main = document.getElementById("mainContent");
+  const renders = { home: renderHome, schedule: renderSchedule, explore: renderExplore, checkin: renderCheckin, contact: renderContact, feedback: renderFeedback };
+  main.innerHTML = renders[tab] ? renders[tab]() : "";
+  afterRender(tab);
+}
+
+function afterRender(tab) {
+  if (tab === "home") {
+    setupCheckoutInput();
+    startCountdown();
   }
+  if (tab === "feedback") setupFeedback();
+  if (tab === "checkin") setupCheckin();
 }
 
-// ===== ADMIN PANEL =====
-function switchAdminTab(tab, btn) {
-  document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
-  document.getElementById('tab-' + tab).style.display = 'block';
-  document.querySelectorAll('.modal-header ~ div button').forEach(b => {
-    b.style.borderBottom = 'none';
-    b.style.color = '';
+// \u2500\u2500\u2500 HOME \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function renderHome() {
+  const wifi = getJSON("wifi", { ssid:"HostelHub_Guest", pass:"1234" });
+  const rules = getContent("rules","").split("\n").filter(Boolean);
+  const welcomeText = getContent("welcome", "\u05E9\u05DE\u05D7\u05D9\u05DD \u05DC\u05D0\u05E8\u05D7 \u05D0\u05EA\u05DB\u05DD! \u05D4\u05D3\u05E3 \u05D4\u05D6\u05D4 \u05D9\u05E2\u05D6\u05D5\u05E8 \u05DC\u05DB\u05DD \u05DC\u05E7\u05D1\u05DC \u05D0\u05EA \u05DB\u05DC \u05D4\u05DE\u05D9\u05D3\u05E2 \u05DC\u05E9\u05D4\u05D9\u05D9\u05D4 \u05E0\u05E2\u05D9\u05DE\u05D4.");
+
+  const activeMessages = appData.messages.filter(m => {
+    if (!m.is_active) return false;
+    if (m.expires_at && new Date(m.expires_at) < new Date()) return false;
+    return true;
   });
-  btn.style.borderBottom = '2px solid var(--warm)';
-  btn.style.color = 'var(--warm)';
+  const bgColors = { normal:"bg-blue-50 border-blue-200 text-blue-800", important:"bg-yellow-50 border-yellow-300 text-yellow-800", urgent:"bg-red-50 border-red-300 text-red-800" };
+
+  const todayRota = appData.rota.filter(s => s.shift_date === new Date().toISOString().split("T")[0]);
+
+  return `
+    ${activeMessages.map(m => `
+      <div class="border rounded-2xl p-4 mb-3 ${bgColors[m.priority||'normal']}">
+        <p class="font-bold text-sm">${esc(m.title)}</p>
+        <p class="text-sm mt-1 opacity-80">${esc(m.body)}</p>
+      </div>
+    `).join("")}
+
+    ${checkoutDate ? `
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-center justify-between">
+        <div>
+          <p class="text-sm font-semibold text-amber-700">\u23F1\uFE0F \u05E2\u05D3 \u05D4\u05E6'\u05E7-\u05D0\u05D0\u05D5\u05D8</p>
+          <p class="text-xs text-amber-500">\u05E6'\u05E7-\u05D0\u05D0\u05D5\u05D8 \u05E2\u05D3 11:00</p>
+        </div>
+        <div class="text-left">
+          <p class="text-2xl font-bold text-amber-700" id="countdownDisplay">...</p>
+          <button onclick="clearCheckout()" class="text-xs text-amber-400 underline">\u05E0\u05E7\u05D4</button>
+        </div>
+      </div>
+    ` : `
+      <div class="bg-white rounded-2xl border p-4 mb-4">
+        <p class="text-sm font-semibold text-gray-600 mb-2">\u1F4C5 \u05DE\u05EA\u05D9 \u05D4\u05E6'\u05E7-\u05D0\u05D0\u05D5\u05D8 \u05E9\u05DC\u05DA?</p>
+        <input type="date" id="checkoutInput" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" value="${checkoutDate}" />
+      </div>
+    `}
+
+    <div class="bg-white rounded-2xl border p-5 mb-4">
+      <h2 class="text-lg font-bold text-gray-800 mb-2">\u05D1\u05E8\u05D5\u05DB\u05D9\u05DD \u05D4\u05D1\u05D0\u05D9\u05DD \u1F44B</h2>
+      <p class="text-gray-600 text-sm leading-relaxed">${esc(welcomeText)}</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border p-5 mb-4">
+      <h3 class="font-bold text-gray-800 mb-3">\u1F4F6 WiFi</h3>
+      <div class="space-y-2">
+        <div class="flex justify-between items-center bg-gray-50 rounded-xl px-4 py-2">
+          <span class="text-sm text-gray-500">\u05E9\u05DD \u05D4\u05E8\u05E9\u05EA</span>
+          <span class="font-bold text-gray-800">${esc(wifi.ssid||"")}</span>
+        </div>
+        <div class="flex justify-between items-center bg-blue-50 rounded-xl px-4 py-2">
+          <span class="text-sm text-gray-500">\u05E1\u05D9\u05E1\u05DE\u05D4</span>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-blue-700" id="wifiPass">${esc(wifi.pass||"")}</span>
+            <button onclick="copyWifi('${esc(wifi.pass||'')}')" class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-lg">\u05D4\u05E2\u05EA\u05E7</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    ${rules.length > 0 ? `
+      <div class="bg-white rounded-2xl border p-5 mb-4">
+        <h3 class="font-bold text-gray-800 mb-3">\u1F4CB \u05DB\u05DC\u05DC\u05D9 \u05D4\u05D1\u05D9\u05EA</h3>
+        <ul class="space-y-2">
+          ${rules.map(r => `<li class="flex items-start gap-2 text-sm text-gray-700"><span class="text-blue-500 mt-0.5">\u2022</span> ${esc(r)}</li>`).join("")}
+        </ul>
+      </div>
+    ` : ""}
+
+    ${todayRota.length > 0 ? `
+      <div class="bg-white rounded-2xl border p-5 mb-4">
+        <h3 class="font-bold text-gray-800 mb-3">\u1F465 \u05E6\u05D5\u05D5\u05EA \u05D4\u05D9\u05D5\u05DD</h3>
+        <div class="space-y-2">
+          ${todayRota.map(s => `
+            <div class="flex items-center justify-between bg-blue-50 rounded-xl px-4 py-2">
+              <div>
+                <p class="font-bold text-sm text-gray-800">${esc(s.staff_name)}</p>
+                <p class="text-xs text-gray-500">${esc(s.role)}${s.shift_start ? ' \u2022 '+s.shift_start+'\u2013'+s.shift_end : ''}</p>
+              </div>
+              ${s.phone ? `<a href="tel:${esc(s.phone)}" class="text-blue-600 text-sm font-semibold">${esc(s.phone)}</a>` : ""}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    ` : ""}
+  `;
 }
 
-function loadAdminData() {
-  const data = getData();
-  
-  // General
-  document.getElementById('admin-title').value = data.title || 'Equip Center';
-  document.getElementById('admin-subtitle').value = data.subtitle || 'Welcome to our facility!';
-  document.getElementById('admin-icon').value = data.icon || '🏢';
-  
-  // WiFi
-  document.getElementById('admin-wifi-ssid').value = data.wifi.ssid || '';
-  document.getElementById('admin-wifi-password').value = data.wifi.password || '';
-  
-  // Rules
-  data.rules.forEach((r, i) => {
-    const el = document.getElementById('admin-rule-' + (i + 1));
-    if (el) el.value = r;
-  });
-  
-  // Contacts
-  document.getElementById('admin-contact-whatsapp').value = data.whatsapp || '';
-  
-  if (data.contacts) {
-    data.contacts.forEach((c, i) => {
-      const nameEl = document.getElementById('admin-contact-' + (i + 1) + '-name');
-      const phoneEl = document.getElementById('admin-contact-' + (i + 1) + '-phone');
-      if (nameEl) nameEl.value = c.name;
-      if (phoneEl) phoneEl.value = c.phone;
+function setupCheckoutInput() {
+  const inp = document.getElementById("checkoutInput");
+  if (inp) {
+    inp.addEventListener("change", e => {
+      checkoutDate = e.target.value;
+      localStorage.setItem("guest_checkout", checkoutDate);
+      renderTab("home");
     });
   }
-  
-  // Info
-  document.getElementById('admin-info').value = data.info || '';
 }
 
-function saveGeneral() {
-  const data = getData();
-  data.title = document.getElementById('admin-title').value.trim() || 'Equip Center';
-  data.subtitle = document.getElementById('admin-subtitle').value.trim() || 'Welcome to our facility!';
-  data.icon = document.getElementById('admin-icon').value.trim() || '🏢';
-  setData(data);
-  toast('Settings saved successfully ✓');
-  renderPage();
+function clearCheckout() {
+  checkoutDate = "";
+  localStorage.removeItem("guest_checkout");
+  renderTab("home");
 }
 
-function saveWiFi() {
-  const data = getData();
-  data.wifi = {
-    ssid: document.getElementById('admin-wifi-ssid').value.trim(),
-    password: document.getElementById('admin-wifi-password').value.trim()
+function startCountdown() {
+  if (!checkoutDate) return;
+  function calc() {
+    const el = document.getElementById("countdownDisplay");
+    if (!el) return;
+    const co = new Date(checkoutDate + "T11:00:00");
+    const diff = co - new Date();
+    if (diff <= 0) { el.textContent = "\u23F0 \u05D4\u05D2\u05D9\u05E2 \u05D4\u05D6\u05DE\u05DF!"; return; }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    el.textContent = h > 48 ? Math.floor(h/24) + " \u05D9\u05DE\u05D9\u05DD" : h + "\u05E9\u05F3 " + m + "\u05D3\u05F3";
+  }
+  calc();
+  setInterval(calc, 60000);
+}
+
+function copyWifi(pass) {
+  navigator.clipboard?.writeText(pass).then(() => {
+    const btn = event.target;
+    btn.textContent = "\u2713 \u05D4\u05D5\u05E2\u05EA\u05E7";
+    setTimeout(() => btn.textContent = "\u05D4\u05E2\u05EA\u05E7", 2000);
+  });
+}
+
+// \u2500\u2500\u2500 SCHEDULE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function renderSchedule() {
+  const meals = Object.values(appData.content).filter(r=>r.section_type==="meal").sort((a,b)=>a.order_index-b.order_index).map(r=>{try{return JSON.parse(r.content);}catch{return null;}}).filter(Boolean);
+  const events = Object.values(appData.content).filter(r=>r.section_type==="event").sort((a,b)=>a.order_index-b.order_index).map(r=>{try{return JSON.parse(r.content);}catch{return null;}}).filter(Boolean);
+  const schedNotes = getContent("sched_notes","");
+
+  if (meals.length === 0 && events.length === 0) {
+    return `<div class="text-center text-gray-400 py-16">\u05DC\u05D0 \u05D4\u05D5\u05D2\u05D3\u05E8\u05D5 \u05DC\u05D5\u05D7\u05D5\u05EA \u05D6\u05DE\u05E0\u05D9\u05DD \u05E2\u05D3\u05D9\u05D9\u05DF</div>`;
+  }
+
+  return `
+    ${meals.length > 0 ? `
+      <div class="bg-white rounded-2xl border p-5 mb-4">
+        <h3 class="font-bold text-gray-800 mb-3">\u1F37D\uFE0F \u05DC\u05D5\u05D7 \u05D0\u05E8\u05D5\u05D7\u05D5\u05EA</h3>
+        <div class="divide-y">
+          ${meals.map(m => `
+            <div class="flex justify-between items-center py-3">
+              <span class="font-semibold text-gray-700 text-sm">${esc(m.name||"")}</span>
+              <div class="text-left text-xs text-gray-500">
+                ${m.days ? `<span class="block">${esc(m.days)}</span>` : ""}
+                ${m.time ? `<span class="font-bold text-gray-700">${esc(m.time)}</span>` : ""}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    ` : ""}
+
+    ${events.length > 0 ? `
+      <div class="bg-white rounded-2xl border p-5 mb-4">
+        <h3 class="font-bold text-gray-800 mb-3">\u1F54D \u05EA\u05E4\u05D9\u05DC\u05D5\u05EA \u05D5\u05D0\u05D9\u05E8\u05D5\u05E2\u05D9\u05DD</h3>
+        <div class="divide-y">
+          ${events.map(e => `
+            <div class="flex justify-between items-center py-3">
+              <span class="font-semibold text-gray-700 text-sm">${esc(e.name||"")}</span>
+              <div class="text-left text-xs text-gray-500">
+                ${e.days ? `<span class="block">${esc(e.days)}</span>` : ""}
+                ${e.time ? `<span class="font-bold text-gray-700">${esc(e.time)}</span>` : ""}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    ` : ""}
+
+    ${schedNotes ? `<div class="bg-yellow-50 rounded-2xl border border-yellow-100 p-4"><p class="text-sm text-yellow-700">\u2139\uFE0F ${esc(schedNotes)}</p></div>` : ""}
+  `;
+}
+
+// \u2500\u2500\u2500 EXPLORE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+let exploreFilter = "all";
+function renderExplore() {
+  const icons = { restaurant:"\u1F37D\uFE0F", attraction:"\u1F3DB\uFE0F", shop:"\u1F6D2", transport:"\u1F68C", other:"\u1F4CD" };
+  const labels = { restaurant:"\u05DE\u05E1\u05E2\u05D3\u05D5\u05EA", attraction:"\u05D0\u05D8\u05E8\u05E7\u05E6\u05D9\u05D5\u05EA", shop:"\u05D7\u05E0\u05D5\u05D9\u05D5\u05EA", transport:"\u05EA\u05D7\u05D1\u05D5\u05E8\u05D4", other:"\u05D0\u05D7\u05E8" };
+  const visible = appData.attractions.filter(i => i.is_visible !== false);
+  const cats = ["all", ...new Set(visible.map(i=>i.category))];
+  const filtered = exploreFilter === "all" ? visible : visible.filter(i=>i.category===exploreFilter);
+
+  return `
+    <div class="bg-white rounded-2xl border p-5">
+      <h3 class="font-bold text-gray-800 mb-3">\u1F5FA\uFE0F \u05DE\u05D4 \u05DC\u05E2\u05E9\u05D5\u05EA \u05D1\u05D0\u05D6\u05D5\u05E8</h3>
+      <div class="flex gap-2 mb-4 flex-wrap">
+        ${cats.map(c => `
+          <button onclick="setExploreFilter('${c}')" class="px-3 py-1 rounded-full text-xs font-semibold ${exploreFilter===c ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}">
+            ${c==="all" ? "\u05D4\u05DB\u05DC" : (icons[c]||"")+" "+(labels[c]||c)}
+          </button>
+        `).join("")}
+      </div>
+      ${visible.length === 0 ? `<p class="text-gray-400 text-sm text-center py-8">\u05D4\u05DE\u05DC\u05E6\u05D5\u05EA \u05D9\u05EA\u05D5\u05D5\u05E1\u05E4\u05D5 \u05D1\u05E7\u05E8\u05D5\u05D1</p>` : `
+        <div class="space-y-2">
+          ${filtered.map(item => `
+            <div class="rounded-xl border p-3 flex items-start gap-3">
+              <span class="text-2xl">${icons[item.category]||"\u1F4CD"}</span>
+              <div>
+                <p class="font-bold text-sm text-gray-800">${esc(item.name)}</p>
+                ${item.description ? `<p class="text-xs text-gray-500 mt-0.5">${esc(item.description)}</p>` : ""}
+                <div class="flex gap-2 mt-1 text-xs text-gray-400">
+                  ${item.distance ? `<span>\u1F4CD ${esc(item.distance)}</span>` : ""}
+                  ${item.address ? `<span>\u2022 ${esc(item.address)}</span>` : ""}
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `}
+    </div>
+  `;
+}
+
+function setExploreFilter(f) {
+  exploreFilter = f;
+  renderTab("explore");
+}
+
+// \u2500\u2500\u2500 CHECKIN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function renderCheckin() {
+  return `
+    <div class="bg-white rounded-2xl border p-5">
+      <h3 class="font-bold text-gray-800 mb-1">\u2705 \u05E6'\u05E7-\u05D0\u05D9\u05DF \u05D3\u05D9\u05D2\u05D9\u05D8\u05DC\u05D9</h3>
+      <p class="text-xs text-gray-400 mb-4">\u05DE\u05DC\u05D0 \u05E4\u05E8\u05D8\u05D9\u05DD \u05DC\u05E4\u05E0\u05D9 \u05D4\u05D4\u05D2\u05E2\u05D4 \u05D5\u05D7\u05E1\u05D5\u05DA \u05D6\u05DE\u05DF \u05D1\u05E7\u05D1\u05DC\u05D4</p>
+      <div id="checkinFormWrap">
+        <div class="space-y-3">
+          <input id="ci_name" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="\u05E9\u05DD \u05DE\u05DC\u05D0 *" />
+          <div class="grid grid-cols-2 gap-2">
+            <input id="ci_phone" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="\u05D8\u05DC\u05E4\u05D5\u05DF" />
+            <input id="ci_email" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="\u05D0\u05D9\u05DE\u05D9\u05D9\u05DC" type="email" />
+          </div>
+          <input id="ci_id" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="\u05DE\u05E1\u05E4\u05E8 \u05EA.\u05D6." />
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="text-xs text-gray-500 mb-1 block">\u05DB\u05E0\u05D9\u05E1\u05D4 *</label><input type="date" id="ci_checkin" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" /></div>
+            <div><label class="text-xs text-gray-500 mb-1 block">\u05D9\u05E6\u05D9\u05D0\u05D4</label><input type="date" id="ci_checkout" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" /></div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="text-xs text-gray-500 mb-1 block">\u05E9\u05E2\u05EA \u05D4\u05D2\u05E2\u05D4</label><input type="time" id="ci_arrival" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" /></div>
+            <div><label class="text-xs text-gray-500 mb-1 block">\u05DE\u05E1\u05F3 \u05D0\u05D5\u05E8\u05D7\u05D9\u05DD</label><input type="number" min="1" id="ci_guests" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" value="1" /></div>
+          </div>
+          <textarea id="ci_requests" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-y" rows="2" placeholder="\u05D1\u05E7\u05E9\u05D5\u05EA \u05DE\u05D9\u05D5\u05D7\u05D3\u05D5\u05EA..."></textarea>
+          <button onclick="submitCheckin()" class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700">
+            \u05E9\u05DC\u05D7 \u05E4\u05E8\u05D8\u05D9 \u05D4\u05D2\u05E2\u05D4 \u2192
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setupCheckin() {}
+
+async function submitCheckin() {
+  const name = document.getElementById("ci_name")?.value?.trim();
+  const checkin = document.getElementById("ci_checkin")?.value;
+  if (!name || !checkin) { alert("\u05E0\u05D0 \u05DC\u05DE\u05DC\u05D0 \u05E9\u05DD \u05D5\u05EA\u05D0\u05E8\u05D9\u05DA \u05DB\u05E0\u05D9\u05E1\u05D4"); return; }
+  const btn = document.querySelector("#checkinFormWrap button");
+  btn.textContent = "\u05E9\u05D5\u05DC\u05D7..."; btn.disabled = true;
+  const ok = await apiPost("DigitalCheckin", {
+    full_name: name,
+    phone: document.getElementById("ci_phone")?.value || "",
+    email: document.getElementById("ci_email")?.value || "",
+    id_number: document.getElementById("ci_id")?.value || "",
+    checkin_date: checkin,
+    checkout_date: document.getElementById("ci_checkout")?.value || "",
+    estimated_arrival: document.getElementById("ci_arrival")?.value || "",
+    num_guests: parseInt(document.getElementById("ci_guests")?.value) || 1,
+    special_requests: document.getElementById("ci_requests")?.value || "",
+    status: "pending"
+  });
+  document.getElementById("checkinFormWrap").innerHTML = ok
+    ? `<div class="text-center py-8"><div class="text-5xl mb-3">\u2705</div><p class="font-bold text-green-700">\u05E0\u05E9\u05DC\u05D7 \u05D1\u05D4\u05E6\u05DC\u05D7\u05D4!</p><p class="text-sm text-gray-500 mt-1">\u05D4\u05E6\u05D5\u05D5\u05EA \u05D9\u05D0\u05E9\u05E8 \u05D0\u05EA \u05E4\u05E8\u05D8\u05D9\u05DA \u05D1\u05E7\u05E8\u05D5\u05D1</p></div>`
+    : `<div class="text-center py-8 text-red-500">\u05E9\u05D2\u05D9\u05D0\u05D4 \u05D1\u05E9\u05DC\u05D9\u05D7\u05D4, \u05E0\u05E1\u05D4 \u05E9\u05D5\u05D1</div>`;
+}
+
+// \u2500\u2500\u2500 CONTACT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function renderContact() {
+  const waNum = getContent("whatsapp","972584400114").replace(/\D/g,"");
+  const contactText = getContent("contact_text","\u05DC\u05DB\u05DC \u05E9\u05D0\u05DC\u05D4 \u2014 \u05E4\u05E0\u05D5 \u05DC\u05E6\u05D5\u05D5\u05EA \u05D3\u05E8\u05DA WhatsApp");
+  return `
+    <div class="bg-white rounded-2xl border p-5">
+      <h3 class="font-bold text-gray-800 mb-3">\u1F4DE \u05E6\u05D5\u05E8 \u05E7\u05E9\u05E8 \u05E2\u05DD \u05D4\u05E6\u05D5\u05D5\u05EA</h3>
+      <p class="text-sm text-gray-600 mb-4">${esc(contactText)}</p>
+      <a href="https://wa.me/${waNum}" target="_blank"
+        class="flex items-center justify-center gap-2 w-full py-3 bg-green-500 text-white rounded-xl font-bold text-sm hover:bg-green-600">
+        <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  `;
+}
+
+// \u2500\u2500\u2500 FEEDBACK \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+const fbQuestions = [
+  { id:"cleanliness_rating", label:"\u05E0\u05D9\u05E7\u05D9\u05D5\u05DF" },
+  { id:"food_rating", label:"\u05D0\u05D5\u05DB\u05DC" },
+  { id:"communication_rating", label:"\u05EA\u05E7\u05E9\u05D5\u05E8\u05EA \u05E2\u05DD \u05D4\u05E6\u05D5\u05D5\u05EA" },
+  { id:"overall_rating", label:"\u05D3\u05D9\u05E8\u05D5\u05D2 \u05DB\u05DC\u05DC\u05D9" },
+];
+
+function renderFeedback() {
+  return `
+    <div class="bg-white rounded-2xl border p-5">
+      <h3 class="font-bold text-gray-800 mb-1">\u2B50 \u05E9\u05EA\u05E3 \u05D0\u05D5\u05EA\u05E0\u05D5</h3>
+      <p class="text-xs text-gray-400 mb-4">\u05D4\u05E4\u05D9\u05D3\u05D1\u05E7 \u05E9\u05DC\u05DA \u05E2\u05D5\u05D6\u05E8 \u05DC\u05E0\u05D5 \u05DC\u05D4\u05E9\u05EA\u05E4\u05E8</p>
+      <div id="feedbackFormWrap">
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-2">
+            <input id="fb_name" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="\u05E9\u05DE\u05DA (\u05D0\u05D5\u05E4\u05E6\u05D9\u05D5\u05E0\u05DC\u05D9)" />
+            <input id="fb_room" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" placeholder="\u05DE\u05E1\u05E4\u05E8 \u05D7\u05D3\u05E8" />
+          </div>
+          ${fbQuestions.map(q => `
+            <div>
+              <p class="text-sm font-semibold text-gray-700 mb-2">${esc(q.label)}</p>
+              <div class="flex gap-2">
+                ${[1,2,3,4,5].map(n => `
+                  <button onclick="setRating('${q.id}',${n})" id="star_${q.id}_${n}"
+                    class="star-btn star-inactive">${n}</button>
+                `).join("")}
+              </div>
+            </div>
+          `).join("")}
+          <textarea id="fb_comments" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-y" rows="3" placeholder="\u05D4\u05E2\u05E8\u05D5\u05EA \u05E0\u05D5\u05E1\u05E4\u05D5\u05EA..."></textarea>
+          <button onclick="submitFeedback()" class="w-full py-3 bg-yellow-500 text-white rounded-xl font-bold text-sm hover:bg-yellow-600">
+            \u05E9\u05DC\u05D7 \u05E4\u05D9\u05D3\u05D1\u05E7 \u2B50
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setupFeedback() { feedbackRatings = {}; }
+
+function setRating(qid, val) {
+  feedbackRatings[qid] = val;
+  [1,2,3,4,5].forEach(n => {
+    const btn = document.getElementById(`star_${qid}_${n}`);
+    if (btn) btn.className = `star-btn ${n===val ? 'star-active' : 'star-inactive'}`;
+  });
+}
+
+async function submitFeedback() {
+  const allRated = fbQuestions.every(q => feedbackRatings[q.id]);
+  if (!allRated) { alert("\u05D0\u05E0\u05D0 \u05D3\u05E8\u05D2 \u05D0\u05EA \u05DB\u05DC \u05D4\u05E7\u05D8\u05D2\u05D5\u05E8\u05D9\u05D5\u05EA"); return; }
+  const btn = document.querySelector("#feedbackFormWrap button");
+  btn.textContent = "\u05E9\u05D5\u05DC\u05D7..."; btn.disabled = true;
+  const payload = {
+    guest_name: document.getElementById("fb_name")?.value || "",
+    room_number: document.getElementById("fb_room")?.value || "",
+    comments: document.getElementById("fb_comments")?.value || "",
   };
-  setData(data);
-  toast('WiFi saved successfully ✓');
-  renderPage();
+  fbQuestions.forEach(q => { payload[q.id] = feedbackRatings[q.id]; });
+  const ok = await apiPost("GuestFeedback", payload);
+  document.getElementById("feedbackFormWrap").innerHTML = ok
+    ? `<div class="text-center py-8"><div class="text-5xl mb-3">\u2B50</div><p class="font-bold text-yellow-700">\u05EA\u05D5\u05D3\u05D4 \u05E2\u05DC \u05D4\u05E4\u05D9\u05D3\u05D1\u05E7!</p><p class="text-sm text-gray-500 mt-1">\u05D7\u05D5\u05D5\u05EA \u05D3\u05E2\u05EA\u05DA \u05D7\u05E9\u05D5\u05D1\u05D4 \u05DC\u05E0\u05D5</p></div>`
+    : `<div class="text-center py-8 text-red-500">\u05E9\u05D2\u05D9\u05D0\u05D4 \u05D1\u05E9\u05DC\u05D9\u05D7\u05D4, \u05E0\u05E1\u05D4 \u05E9\u05D5\u05D1</div>`;
 }
 
-function saveRules() {
-  const data = getData();
-  data.rules = [1, 2, 3, 4].map(i => document.getElementById('admin-rule-' + i).value.trim()).filter(r => r);
-  setData(data);
-  toast('Rules saved successfully ✓');
-  renderPage();
+// \u2500\u2500\u2500 Utils \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function esc(s) {
+  if (!s) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
-
-function saveContacts() {
-  const data = getData();
-  data.whatsapp = document.getElementById('admin-contact-whatsapp').value.trim();
-  data.contacts = [];
-  for (let i = 1; i <= 2; i++) {
-    const name = document.getElementById('admin-contact-' + i + '-name').value.trim();
-    const phone = document.getElementById('admin-contact-' + i + '-phone').value.trim();
-    if (name && phone) data.contacts.push({ name, phone });
-  }
-  setData(data);
-  toast('Contacts saved successfully ✓');
-  renderPage();
-}
-
-function saveInfo() {
-  const data = getData();
-  data.info = document.getElementById('admin-info').value.trim();
-  setData(data);
-  toast('Information saved successfully ✓');
-  renderPage();
-}
-
-document.getElementById('modal-admin').addEventListener('click', e => {
-  if (e.target.id === 'modal-admin') closeModal('modal-admin');
-});
-
-// Close modal when opening
-const modalAdmin = document.getElementById('modal-admin');
-const observer = new MutationObserver(() => {
-  if (modalAdmin.classList.contains('open')) {
-    loadAdminData();
-  }
-});
-observer.observe(modalAdmin, { attributes: true });
-
-// ===== INIT =====
-renderPage();
 </script>
-
 </body>
 </html>
